@@ -3,6 +3,7 @@ package io.kirill.orderservice.order;
 import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import io.kirill.orderservice.order.models.CreateOrderRequest;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -48,5 +49,26 @@ class OrderControllerTest {
       .expectHeader().contentTypeCompatibleWith(APPLICATION_JSON)
       .expectBody()
       .jsonPath("$.id").isEqualTo(orderId);
+  }
+
+  @Test
+  void createWhenValidationError() {
+    var orderId = UUID.randomUUID().toString();
+    doAnswer(invocation -> Mono.just(((Order)invocation.getArgument(0)).withId(orderId))).when(orderService).create(any());
+
+    var createOrderRequest = CreateOrderRequest.builder().build();
+
+    client
+      .post()
+      .uri("/orders")
+      .bodyValue(createOrderRequest)
+      .exchange()
+      .expectStatus().isBadRequest()
+      .expectHeader().contentTypeCompatibleWith(APPLICATION_JSON)
+      .expectBody()
+      .jsonPath("$.message").value(Matchers.containsString("billingAddress: must not be null"))
+      .jsonPath("$.message").value(Matchers.containsString("lineItems: must not be empty"))
+      .jsonPath("$.message").value(Matchers.containsString("shippingAddress: must not be null"))
+      .jsonPath("$.message").value(Matchers.containsString("customerId: must not be empty"));
   }
 }
