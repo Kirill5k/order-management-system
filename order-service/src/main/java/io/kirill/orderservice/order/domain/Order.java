@@ -2,14 +2,20 @@ package io.kirill.orderservice.order.domain;
 
 import java.time.Instant;
 import java.util.List;
+
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.With;
+import lombok.experimental.Wither;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document
 @Value
+@Builder
+@With
 @RequiredArgsConstructor
 public class Order {
   @Id
