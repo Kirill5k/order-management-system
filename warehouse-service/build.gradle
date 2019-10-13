@@ -1,10 +1,3 @@
-buildscript {
-	repositories {
-		mavenCentral()
-		maven { url 'https://repo.spring.io/milestone' }
-	}
-}
-
 plugins {
 	id 'org.springframework.boot' version '2.2.0.RC1'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
@@ -27,7 +20,6 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.apache.kafka:kafka-streams'
@@ -38,7 +30,6 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 

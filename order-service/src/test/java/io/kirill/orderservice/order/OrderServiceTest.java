@@ -1,6 +1,8 @@
 package io.kirill.orderservice.order;
 
+import io.kirill.orderservice.order.clients.WarehouseClient;
 import io.kirill.orderservice.order.domain.OrderBuilder;
+import io.kirill.orderservice.order.repositories.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,14 +12,16 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
   @Mock
   OrderRepository orderRepository;
+
+  @Mock
+  WarehouseClient warehouseClient;
 
   @InjectMocks
   OrderService orderService;
@@ -35,5 +39,21 @@ class OrderServiceTest {
       .verifyComplete();
 
     verify(orderRepository).save(newOrder);
+    verify(warehouseClient).verifyStock(newOrder);
+  }
+
+  @Test
+  void createReturnsError() {
+    when(orderRepository.save(any())).thenReturn(Mono.error(RuntimeException::new));
+
+    var newOrder = OrderBuilder.get().build();
+    var savedOrder = orderService.create(newOrder);
+
+    StepVerifier
+      .create(savedOrder)
+      .verifyError();
+
+    verify(orderRepository).save(newOrder);
+    verify(warehouseClient, never()).verifyStock(any());
   }
 }

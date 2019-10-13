@@ -1,5 +1,6 @@
 package io.kirill.orderservice.order.domain;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,8 +18,9 @@ public class OrderBuilder {
     return Order.builder()
       .id(UUID.randomUUID().toString())
       .customerId(UUID.randomUUID().toString())
-      .lineItems(List.of(new LineItem(UUID.randomUUID().toString(), 1)))
+      .orderLines(List.of(new OrderLine(UUID.randomUUID().toString(), 1)))
       .shippingAddress(address)
+      .dateCreated(Instant.now())
       .billingAddress(address);
   }
 }

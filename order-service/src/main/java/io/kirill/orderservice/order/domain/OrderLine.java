@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @RequiredArgsConstructor
-public class LineItem {
+public class OrderLine {
   private final String itemId;
   private final Integer amount;
 }
