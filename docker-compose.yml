@@ -1,5 +1,6 @@
 version: '3'
 services:
+
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
   kafka:
@@ -10,26 +11,37 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  mongo:
+
+  mongo-orders:
     image: bitnami/mongodb:latest
     environment:
       MONGODB_USERNAME: dbuser
       MONGODB_PASSWORD: dbpassword
+      MONGODB_DATABASE: orders
   order-service:
     build:
       context: ./order-service
       dockerfile: Dockerfile.dev
     links:
       - kafka
-      - mongo
+      - mongo-orders
     environment:
+      MONGO_HOST: mongo-orders
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  mongo-warehouse:
+    image: bitnami/mongodb:latest
+    environment:
+      MONGODB_USERNAME: dbuser
+      MONGODB_PASSWORD: dbpassword
+      MONGODB_DATABASE: warehouse
   warehouse-service:
     build:
       context: ./warehouse-service
       dockerfile: Dockerfile.dev
     links:
       - kafka
-      - mongo
+      - mongo-warehouse
     environment:
+      MONGO_HOST: mongo-warehouse
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
