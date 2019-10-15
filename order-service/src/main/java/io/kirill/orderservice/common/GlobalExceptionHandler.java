@@ -1,5 +1,7 @@
 package io.kirill.orderservice.common;
 
+import static java.util.stream.Collectors.joining;
+
 import io.kirill.orderservice.common.models.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,8 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
-import static java.util.stream.Collectors.joining;
-
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,8 +22,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(WebExchangeBindException.class)
   public Mono<ApiErrorResponse> handleBadRequest(WebExchangeBindException exception) {
     log.error("error validating a request {}", exception.getMessage(), exception);
-    String message = exception.getBindingResult().getAllErrors()
-      .stream()
+    String message = exception.getBindingResult().getAllErrors().stream()
       .map(error -> String.format("%s: %s", getFieldName(error), error.getDefaultMessage()))
       .collect(joining(", "));
     return Mono.just(new ApiErrorResponse(message));
