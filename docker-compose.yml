@@ -10,14 +10,6 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  apache:
-    build: apache
-    links:
-      - order-service
-      - shipping
-      - invoicing
-    ports:
-      - "8080:80"
   mongo:
     image: bitnami/mongodb:latest
     environment:
