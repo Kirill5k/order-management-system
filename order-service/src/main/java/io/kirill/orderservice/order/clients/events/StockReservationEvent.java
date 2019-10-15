@@ -9,11 +9,11 @@ import java.util.List;
 
 @Value
 @RequiredArgsConstructor
-public class StockVerificationEvent {
+public class StockReservationEvent {
   private final String oderId;
   private final List<OrderLine> orderLines;
 
-  public StockVerificationEvent(Order order) {
+  public StockReservationEvent(Order order) {
     this.oderId = order.getId();
     this.orderLines = order.getOrderLines();
   }

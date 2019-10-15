@@ -2,7 +2,6 @@ package io.kirill.orderservice.order;
 
 import io.kirill.orderservice.order.clients.WarehouseClient;
 import io.kirill.orderservice.order.domain.OrderBuilder;
-import io.kirill.orderservice.order.repositories.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,7 +38,7 @@ class OrderServiceTest {
       .verifyComplete();
 
     verify(orderRepository).save(newOrder);
-    verify(warehouseClient).verifyStock(newOrder);
+    verify(warehouseClient).reserveStock(newOrder);
   }
 
   @Test
@@ -54,6 +53,6 @@ class OrderServiceTest {
       .verifyError();
 
     verify(orderRepository).save(newOrder);
-    verify(warehouseClient, never()).verifyStock(any());
+    verify(warehouseClient, never()).reserveStock(any());
   }
 }

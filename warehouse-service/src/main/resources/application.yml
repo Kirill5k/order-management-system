@@ -1,8 +1,5 @@
-server:
-  port: 8080
-
 spring:
   application:
-    name: order-service
+    name: warehouse-service
   kafka:
     bootstrap-servers: localhost:9092

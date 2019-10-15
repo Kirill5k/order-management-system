@@ -1,4 +1,4 @@
-package io.kirill.orderservice.order.repositories;
+package io.kirill.orderservice.order;
 
 import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;

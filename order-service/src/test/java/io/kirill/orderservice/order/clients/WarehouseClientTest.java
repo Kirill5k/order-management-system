@@ -1,6 +1,10 @@
 package io.kirill.orderservice.order.clients;
 
-import io.kirill.orderservice.order.clients.events.StockVerificationEvent;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+
+import io.kirill.orderservice.order.clients.events.StockReservationEvent;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,29 +15,25 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-
 @ExtendWith(MockitoExtension.class)
 class WarehouseClientTest {
 
   @Mock
-  KafkaTemplate<String, StockVerificationEvent> kafkaTemplate;
+  KafkaTemplate<String, Object> kafkaTemplate;
 
   @InjectMocks
   WarehouseClient warehouseClient;
 
   @Captor
-  ArgumentCaptor<StockVerificationEvent> stockVerificationEventArgumentCaptor;
+  ArgumentCaptor<StockReservationEvent> stockVerificationEventArgumentCaptor;
 
   @Test
-  void verifyStock() {
+  void reserveStock() {
     var order = OrderBuilder.get().id("id1").build();
 
-    warehouseClient.verifyStock(order);
+    warehouseClient.reserveStock(order);
 
-    verify(kafkaTemplate).send(eq("warehouse.stock"), eq("id1-stock-verification"),  stockVerificationEventArgumentCaptor.capture());
+    verify(kafkaTemplate).send(eq("warehouse.stock.reserve"), eq("id1-stock-reservation"),  stockVerificationEventArgumentCaptor.capture());
 
     var sentEvent = stockVerificationEventArgumentCaptor.getValue();
     assertThat(sentEvent.getOderId()).isEqualTo(order.getId());
