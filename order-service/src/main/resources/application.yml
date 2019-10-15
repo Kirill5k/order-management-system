@@ -5,4 +5,4 @@ spring:
   application:
     name: order-service
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
