@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
-import io.kirill.warehouseservice.warehouse.domain.StockLine;
+import io.kirill.warehouseservice.warehouse.clients.OrderServiceClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,10 +19,14 @@ class WarehouseServiceTest {
   @Mock
   StockLineRepository stockLineRepository;
 
+  @Mock
+  OrderServiceClient orderServiceClient;
+
   @InjectMocks
   WarehouseService warehouseService;
 
-  String itemId = "1";
+  String itemId = "item-1";
+  String orderId = "order-1";
 
   @Test
   void verifyIsInStock() {
@@ -42,7 +46,7 @@ class WarehouseServiceTest {
 
     StepVerifier
         .create(warehouseService.verifyIsInStock(itemId, 1))
-        .verifyErrorMatches(error -> error.getMessage().equals("item with 1 does not exist"));
+        .verifyErrorMatches(error -> error.getMessage().equals("item with id item-1 does not exist"));
 
     verify(stockLineRepository).findById(itemId);
   }
@@ -55,7 +59,7 @@ class WarehouseServiceTest {
 
     StepVerifier
         .create(warehouseService.verifyIsInStock(itemId, 3))
-        .verifyErrorMatches(error -> error.getMessage().equals("item 1 is not in stock. available - 1, required - 3"));
+        .verifyErrorMatches(error -> error.getMessage().equals("item with id item-1 is not in stock. available - 1, required - 3"));
 
     verify(stockLineRepository).findById(itemId);
   }
@@ -74,5 +78,20 @@ class WarehouseServiceTest {
 
     verify(stockLineRepository).findById(itemId);
     verify(stockLineRepository).save(any());
+  }
+
+  @Test
+  void declineStockReservation() {
+    var message = "error-message";
+    warehouseService.declineStockReservation(orderId, message);
+
+    verify(orderServiceClient).sendStockReservationFailure(orderId, message);
+  }
+
+  @Test
+  void confirmStockReservation() {
+    warehouseService.confirmStockReservation(orderId);
+
+    verify(orderServiceClient).sendStockReservationSuccess(orderId);
   }
 }

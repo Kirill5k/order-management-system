@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WarehouseClient {
+public class WarehouseServiceClient {
   private final KafkaTemplate<String, Object> kafkaTemplate;
 
-  public void reserveStock(Order order) {
+  public void sendStockReservationEvent(Order order) {
     log.info("reserving stock for order {} by customer {}", order.getId(), order.getCustomerId());
     var event = new StockReservationEvent(order);
     var key = String.format("%s-stock-reservation", order.getId());

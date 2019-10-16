@@ -1,4 +1,4 @@
-package io.kirill.warehouseservice.warehouse.domain;
+package io.kirill.warehouseservice.warehouse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

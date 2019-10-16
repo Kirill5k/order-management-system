@@ -21,6 +21,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @WebFluxTest(OrderController.class)
@@ -64,13 +66,11 @@ class OrderControllerTest {
     var createdOrder = orderArgumentCaptor.getValue();
     assertThat(createdOrder.getStatus()).isEqualTo(OrderStatus.PROCESSING);
     assertThat(createdOrder.getDateCreated()).isBetween(Instant.now().minusSeconds(20), Instant.now().plusSeconds(20));
+    verify(orderService).reserveStock(createdOrder.withId(orderId));
   }
 
   @Test
   void createWhenValidationError() {
-    var orderId = UUID.randomUUID().toString();
-    doAnswer(invocation -> Mono.just(((Order)invocation.getArgument(0)).withId(orderId))).when(orderService).create(any());
-
     var createOrderRequest = CreateOrderRequest.builder().build();
 
     client
@@ -85,5 +85,8 @@ class OrderControllerTest {
       .jsonPath("$.message").value(Matchers.containsString("orderLines: must not be empty"))
       .jsonPath("$.message").value(Matchers.containsString("shippingAddress: must not be null"))
       .jsonPath("$.message").value(Matchers.containsString("customerId: must not be empty"));
+
+    verify(orderService, never()).create(any());
+    verify(orderService, never()).reserveStock(any());
   }
 }

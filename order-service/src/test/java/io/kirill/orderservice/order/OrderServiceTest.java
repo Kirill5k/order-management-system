@@ -1,6 +1,11 @@
 package io.kirill.orderservice.order;
 
-import io.kirill.orderservice.order.clients.WarehouseClient;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import io.kirill.orderservice.order.clients.WarehouseServiceClient;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
@@ -20,7 +22,7 @@ class OrderServiceTest {
   OrderRepository orderRepository;
 
   @Mock
-  WarehouseClient warehouseClient;
+  WarehouseServiceClient warehouseServiceClient;
 
   @InjectMocks
   OrderService orderService;
@@ -33,12 +35,11 @@ class OrderServiceTest {
     var savedOrder = orderService.create(newOrder);
 
     StepVerifier
-      .create(savedOrder)
-      .expectNextMatches(order -> order.getId().equals(newOrder.getId()) && order.getCustomerId().equals(newOrder.getCustomerId()))
-      .verifyComplete();
+        .create(savedOrder)
+        .expectNextMatches(order -> order.getId().equals(newOrder.getId()) && order.getCustomerId().equals(newOrder.getCustomerId()))
+        .verifyComplete();
 
     verify(orderRepository).save(newOrder);
-    verify(warehouseClient).reserveStock(newOrder);
   }
 
   @Test
@@ -49,10 +50,18 @@ class OrderServiceTest {
     var savedOrder = orderService.create(newOrder);
 
     StepVerifier
-      .create(savedOrder)
-      .verifyError();
+        .create(savedOrder)
+        .verifyError();
 
     verify(orderRepository).save(newOrder);
-    verify(warehouseClient, never()).reserveStock(any());
+  }
+
+  @Test
+  void reserveStock() {
+    var newOrder = OrderBuilder.get().build();
+
+    orderService.reserveStock(newOrder);
+
+    verify(warehouseServiceClient).sendStockReservationEvent(newOrder);
   }
 }

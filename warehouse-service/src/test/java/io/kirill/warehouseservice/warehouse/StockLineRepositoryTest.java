@@ -1,6 +1,5 @@
 package io.kirill.warehouseservice.warehouse;
 
-import io.kirill.warehouseservice.warehouse.domain.StockLine;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
