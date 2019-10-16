@@ -46,7 +46,7 @@ class StockEventsListenerTest {
     stockEventsListener.reserveStock(event);
 
     verify(warehouseService, timeout(500)).confirmStockReservation(orderId);
-    verify(warehouseService, never()).declineStockReservation(anyString(), anyString());
+    verify(warehouseService, never()).rejectStockReservation(anyString(), anyString());
     verify(warehouseService).verifyIsInStock(itemId1, 2);
     verify(warehouseService).verifyIsInStock(itemId2, 2);
     verify(warehouseService).reserveStock(itemId1, 2);
@@ -63,7 +63,7 @@ class StockEventsListenerTest {
 
     stockEventsListener.reserveStock(event);
 
-    verify(warehouseService, timeout(500)).declineStockReservation(orderId, "item with id item-2 does not exist");
+    verify(warehouseService, timeout(500)).rejectStockReservation(orderId, "item with id item-2 does not exist");
     verify(warehouseService, after(500).never()).confirmStockReservation(anyString());
     verify(warehouseService, after(500).never()).reserveStock(anyString(), anyInt());
   }

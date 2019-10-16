@@ -1,8 +1,11 @@
 package io.kirill.orderservice.common.configs;
 
 import java.util.Map;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +14,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
@@ -24,9 +29,34 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @Configuration
 public class KafkaConfig {
   public static final String WAREHOUSE_STOCK_RESERVE_TOPIC = "warehouse.stock.reserve";
+  public static final String ORDER_STOCK_CONFIRM_TOPIC = "order.stock.confirm";
+  public static final String ORDER_STOCK_REJECT_TOPIC = "order.stock.reject";
 
   @Value("${spring.kafka.bootstrap-servers}")
   private String bootstrapServers;
+
+  @Bean
+  public KafkaAdmin admin() {
+    return new KafkaAdmin(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers));
+  }
+
+  @Bean
+  public NewTopic stockConfirmTopic() {
+    return TopicBuilder.name(ORDER_STOCK_CONFIRM_TOPIC)
+        .partitions(10)
+        .replicas(3)
+        .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
+        .build();
+  }
+
+  @Bean
+  public NewTopic stockRejectTopic() {
+    return TopicBuilder.name(ORDER_STOCK_REJECT_TOPIC)
+        .partitions(10)
+        .replicas(3)
+        .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
+        .build();
+  }
 
   @Bean
   public ConsumerFactory<String, Object> consumerFactory() {

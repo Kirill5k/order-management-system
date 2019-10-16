@@ -81,9 +81,9 @@ class WarehouseServiceTest {
   }
 
   @Test
-  void declineStockReservation() {
+  void rejectStockReservation() {
     var message = "error-message";
-    warehouseService.declineStockReservation(orderId, message);
+    warehouseService.rejectStockReservation(orderId, message);
 
     verify(orderServiceClient).sendStockReservationFailure(orderId, message);
   }

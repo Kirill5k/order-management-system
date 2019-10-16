@@ -29,6 +29,8 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @Configuration
 public class KafkaConfig {
   public static final String WAREHOUSE_STOCK_RESERVE_TOPIC = "warehouse.stock.reserve";
+  public static final String ORDER_STOCK_CONFIRM_TOPIC = "order.stock.confirm";
+  public static final String ORDER_STOCK_REJECT_TOPIC = "order.stock.reject";
 
   @Value("${spring.kafka.bootstrap-servers}")
   private String bootstrapServers;
@@ -39,7 +41,7 @@ public class KafkaConfig {
   }
 
   @Bean
-  public NewTopic topic1() {
+  public NewTopic stockReserveTopic() {
     return TopicBuilder.name(WAREHOUSE_STOCK_RESERVE_TOPIC)
         .partitions(10)
         .replicas(3)

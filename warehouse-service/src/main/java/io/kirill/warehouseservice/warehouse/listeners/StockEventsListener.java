@@ -26,7 +26,7 @@ public class StockEventsListener {
         .thenMany(Flux.fromIterable(event.getOrderLines()))
         .doOnNext(ol -> warehouseService.reserveStock(ol.getItemId(), ol.getAmount()))
         .onErrorStop()
-        .doOnError(error -> warehouseService.declineStockReservation(event.getOderId(), error.getMessage()))
+        .doOnError(error -> warehouseService.rejectStockReservation(event.getOderId(), error.getMessage()))
         .doOnComplete(() -> warehouseService.confirmStockReservation(event.getOderId()))
         .subscribe();
   }

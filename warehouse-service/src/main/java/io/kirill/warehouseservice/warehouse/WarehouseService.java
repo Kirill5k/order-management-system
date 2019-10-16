@@ -25,7 +25,7 @@ public class WarehouseService {
         .flatMap(stockLineRepository::save);
   }
 
-  public void declineStockReservation(String orderId, String message) {
+  public void rejectStockReservation(String orderId, String message) {
     orderServiceClient.sendStockReservationFailure(orderId, message);
   }
 
