@@ -23,9 +23,9 @@ class OrderRepositoryTest {
     var savedOrder = orderRepository.save(newOrder);
 
     StepVerifier
-      .create(savedOrder)
-      .expectNextMatches(order -> order.getId() != null && order.getDateCreated().equals(newOrder.getDateCreated()))
-      .verifyComplete();
+        .create(savedOrder)
+        .expectNextMatches(order -> order.getId() != null && order.getDateCreated().equals(newOrder.getDateCreated()))
+        .verifyComplete();
   }
 
   @Test
@@ -33,12 +33,12 @@ class OrderRepositoryTest {
     var newOrder = OrderBuilder.get().build();
 
     var foundOrder = template.save(newOrder)
-      .map(Order::getId)
-      .flatMap(orderRepository::findById);
+        .map(Order::getId)
+        .flatMap(orderRepository::findById);
 
     StepVerifier
-      .create(foundOrder)
-      .expectNextMatches(order -> order.getId().equals(newOrder.getId()) && order.getCustomerId().equals(newOrder.getCustomerId()))
-      .verifyComplete();
+        .create(foundOrder)
+        .expectNextMatches(order -> order.getId().equals(newOrder.getId()) && order.getCustomerId().equals(newOrder.getCustomerId()))
+        .verifyComplete();
   }
 }
