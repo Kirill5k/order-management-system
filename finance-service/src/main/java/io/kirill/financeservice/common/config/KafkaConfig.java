@@ -1,4 +1,4 @@
-package io.kirill.orderservice.common.configs;
+package io.kirill.financeservice.common.config;
 
 import java.util.Map;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -28,10 +28,6 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 @EnableKafka
 @Configuration
 public class KafkaConfig {
-  public static final String WAREHOUSE_STOCK_RESERVE_TOPIC = "warehouse.stock.reserve";
-  public static final String ORDER_STOCK_CONFIRM_TOPIC = "order.stock.confirm";
-  public static final String ORDER_STOCK_REJECT_TOPIC = "order.stock.reject";
-
   public static final String FINANCE_PAYMENT_PROCESS_TOPIC = "finance.payment.process";
   public static final String ORDER_PAYMENT_CONFIRM_TOPIC = "order.payment.confirm";
   public static final String ORDER_PAYMENT_REJECT_TOPIC = "order.payment.reject";
@@ -45,35 +41,8 @@ public class KafkaConfig {
   }
 
   @Bean
-  public NewTopic stockConfirmTopic() {
-    return TopicBuilder.name(ORDER_STOCK_CONFIRM_TOPIC)
-        .partitions(10)
-        .replicas(3)
-        .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
-        .build();
-  }
-
-  @Bean
-  public NewTopic stockRejectTopic() {
-    return TopicBuilder.name(ORDER_STOCK_REJECT_TOPIC)
-        .partitions(10)
-        .replicas(3)
-        .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
-        .build();
-  }
-
-  @Bean
-  public NewTopic paymentConfirmTopic() {
-    return TopicBuilder.name(ORDER_PAYMENT_CONFIRM_TOPIC)
-        .partitions(10)
-        .replicas(3)
-        .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
-        .build();
-  }
-
-  @Bean
-  public NewTopic paymentRejectTopic() {
-    return TopicBuilder.name(ORDER_PAYMENT_REJECT_TOPIC)
+  public NewTopic paymentProcessTopic() {
+    return TopicBuilder.name(FINANCE_PAYMENT_PROCESS_TOPIC)
         .partitions(10)
         .replicas(3)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
