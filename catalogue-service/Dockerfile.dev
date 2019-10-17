@@ -1,0 +1,12 @@
+FROM gradle:5.6.2-jdk11 AS builder
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon
+
+FROM openjdk:11.0.4-slim
+ARG port=8082
+ENV PORT=$port
+EXPOSE $port
+VOLUME /tmp
+COPY --from=builder /home/gradle/src/build/libs/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
