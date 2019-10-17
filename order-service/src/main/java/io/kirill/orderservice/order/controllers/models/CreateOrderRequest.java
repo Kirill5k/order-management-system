@@ -40,7 +40,7 @@ public class CreateOrderRequest {
       .orderLines(orderLines)
       .customerId(customerId)
       .dateCreated(Instant.now())
-      .status(OrderStatus.PROCESSING)
+      .status(OrderStatus.INITIATED)
       .build();
   }
 }

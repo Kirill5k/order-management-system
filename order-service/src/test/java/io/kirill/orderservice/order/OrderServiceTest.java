@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import io.kirill.orderservice.order.clients.WarehouseServiceClient;
 import io.kirill.orderservice.order.domain.OrderBuilder;
+import io.kirill.orderservice.order.domain.OrderStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,8 @@ class OrderServiceTest {
 
   @InjectMocks
   OrderService orderService;
+
+  String orderId = "order-1";
 
   @Test
   void create() {
@@ -63,5 +66,22 @@ class OrderServiceTest {
     orderService.reserveStock(newOrder);
 
     verify(warehouseServiceClient).sendStockReservationEvent(newOrder);
+  }
+
+  @Test
+  void updateStatus() {
+    var order = OrderBuilder.get().id(orderId).status(OrderStatus.INITIATED).build();
+
+    when(orderRepository.findById(orderId)).thenReturn(Mono.just(order));
+
+    var updatedOrder = orderService.updateStatus(orderId, OrderStatus.STOCK_RESERVED);
+
+    StepVerifier
+        .create(updatedOrder)
+        .expectNextMatches(o -> o.getId().equals(orderId) && o.getStatus() == OrderStatus.STOCK_RESERVED)
+        .verifyComplete();
+
+    verify(orderRepository).findById(orderId);
+    verify(orderRepository).save(order.withStatus(OrderStatus.STOCK_RESERVED));
   }
 }
