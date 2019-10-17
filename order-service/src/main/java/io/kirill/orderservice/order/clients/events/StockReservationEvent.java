@@ -10,11 +10,11 @@ import java.util.List;
 @Value
 @RequiredArgsConstructor
 public class StockReservationEvent {
-  private final String oderId;
+  private final String orderId;
   private final List<OrderLine> orderLines;
 
   public StockReservationEvent(Order order) {
-    this.oderId = order.getId();
+    this.orderId = order.getId();
     this.orderLines = order.getOrderLines();
   }
 }

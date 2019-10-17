@@ -20,14 +20,14 @@ public class StockEventsListener {
   @KafkaListener(topics = WAREHOUSE_STOCK_RESERVE_TOPIC)
   public void reserveStock(@Payload Object stockReservationEvent) {
     var event = (StockReservationEvent) stockReservationEvent;
-    log.info("received stock reservation event for order {}", event.getOderId());
+    log.info("received stock reservation event for order {}", event.getOrderId());
     Flux.fromIterable(event.getOrderLines())
         .flatMap(ol -> warehouseService.verifyIsInStock(ol.getItemId(), ol.getAmount()))
         .thenMany(Flux.fromIterable(event.getOrderLines()))
         .doOnNext(ol -> warehouseService.reserveStock(ol.getItemId(), ol.getAmount()))
         .onErrorStop()
-        .doOnError(error -> warehouseService.rejectStockReservation(event.getOderId(), error.getMessage()))
-        .doOnComplete(() -> warehouseService.confirmStockReservation(event.getOderId()))
+        .doOnError(error -> warehouseService.rejectStockReservation(event.getOrderId(), error.getMessage()))
+        .doOnComplete(() -> warehouseService.confirmStockReservation(event.getOrderId()))
         .subscribe();
   }
 }

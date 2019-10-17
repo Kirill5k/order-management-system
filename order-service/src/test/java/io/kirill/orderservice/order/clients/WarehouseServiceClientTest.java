@@ -36,7 +36,7 @@ class WarehouseServiceClientTest {
     verify(kafkaTemplate).send(eq("warehouse.stock.reserve"), eq("id1-stock-reservation"),  stockVerificationEventArgumentCaptor.capture());
 
     var sentEvent = stockVerificationEventArgumentCaptor.getValue();
-    assertThat(sentEvent.getOderId()).isEqualTo(order.getId());
+    assertThat(sentEvent.getOrderId()).isEqualTo(order.getId());
     assertThat(sentEvent.getOrderLines()).isEqualTo(order.getOrderLines());
   }
 }

@@ -6,6 +6,6 @@ import lombok.Value;
 @Value
 @RequiredArgsConstructor
 public class StockReservationEvent {
-  private final String oderId;
+  private final String orderId;
   private final List<OrderLine> orderLines;
 }
