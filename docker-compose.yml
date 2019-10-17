@@ -51,7 +51,7 @@ services:
     environment:
       MONGODB_USERNAME: dbuser
       MONGODB_PASSWORD: dbpassword
-      MONGODB_DATABASE: warehouse
+      MONGODB_DATABASE: finance
   warehouse-finance:
     build:
       context: ./finance-service
