@@ -21,8 +21,10 @@ public class Order {
   private final String id;
   private final String customerId;
   private final OrderStatus status;
+  private final List<OrderLine> orderLines;
   private final Address shippingAddress;
   private final Address billingAddress;
-  private final List<OrderLine> orderLines;
+  private final PaymentDetails paymentDetails;
   private final Instant dateCreated;
+  private final Instant dateUpdated;
 }

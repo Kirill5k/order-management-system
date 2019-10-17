@@ -1,15 +1,22 @@
 package io.kirill.orderservice.order;
 
+import static io.kirill.orderservice.order.domain.OrderStatus.STOCK_RESERVED;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.kirill.orderservice.order.clients.FinanceServiceClient;
 import io.kirill.orderservice.order.clients.WarehouseServiceClient;
+import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import io.kirill.orderservice.order.domain.OrderStatus;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,8 +32,14 @@ class OrderServiceTest {
   @Mock
   WarehouseServiceClient warehouseServiceClient;
 
+  @Mock
+  FinanceServiceClient financeServiceClient;
+
   @InjectMocks
   OrderService orderService;
+
+  @Captor
+  ArgumentCaptor<Order> orderArgumentCaptor;
 
   String orderId = "order-1";
 
@@ -74,14 +87,24 @@ class OrderServiceTest {
 
     when(orderRepository.findById(orderId)).thenReturn(Mono.just(order));
 
-    var updatedOrder = orderService.updateStatus(orderId, OrderStatus.STOCK_RESERVED);
-
     StepVerifier
-        .create(updatedOrder)
-        .expectNextMatches(o -> o.getId().equals(orderId) && o.getStatus() == OrderStatus.STOCK_RESERVED)
+        .create(orderService.updateStatus(orderId, STOCK_RESERVED))
+        .expectNextMatches(o -> o.getId().equals(orderId) && o.getStatus() == STOCK_RESERVED && o.getDateUpdated() != null)
         .verifyComplete();
 
     verify(orderRepository).findById(orderId);
-    verify(orderRepository).save(order.withStatus(OrderStatus.STOCK_RESERVED));
+    verify(orderRepository).save(orderArgumentCaptor.capture());
+    var updatedOrder = orderArgumentCaptor.getValue();
+    assertThat(updatedOrder.getId()).isEqualTo(orderId);
+    assertThat(updatedOrder.getDateUpdated()).isBetween(Instant.now().minusSeconds(30), Instant.now().plusSeconds(30));
+  }
+
+  @Test
+  void processPayment() {
+    var order = OrderBuilder.get().build();
+
+    orderService.processPayment(order);
+
+    verify(financeServiceClient).sendPaymentProcessingEvent(order);
   }
 }

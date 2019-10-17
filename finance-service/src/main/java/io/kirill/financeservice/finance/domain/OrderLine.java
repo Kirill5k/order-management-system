@@ -1,4 +1,4 @@
-package io.kirill.orderservice.order.domain;
+package io.kirill.financeservice.finance.domain;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
