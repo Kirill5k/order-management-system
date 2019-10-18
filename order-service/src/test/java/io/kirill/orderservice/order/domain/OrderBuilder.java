@@ -1,6 +1,6 @@
 package io.kirill.orderservice.order.domain;
 
-import static io.kirill.orderservice.order.domain.OrderStatus.INITIATED;
+import static io.kirill.orderservice.order.domain.OrderStatus.INITIATED_RESERVING_STOCK;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,7 +31,7 @@ public class OrderBuilder {
         .shippingAddress(address)
         .dateCreated(Instant.now())
         .paymentDetails(paymentDetails)
-        .status(INITIATED)
+        .status(INITIATED_RESERVING_STOCK)
         .billingAddress(address);
   }
 }

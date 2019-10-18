@@ -1,6 +1,6 @@
 package io.kirill.orderservice.order;
 
-import static io.kirill.orderservice.order.domain.OrderStatus.STOCK_RESERVED;
+import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -83,13 +83,13 @@ class OrderServiceTest {
 
   @Test
   void updateStatus() {
-    var order = OrderBuilder.get().id(orderId).status(OrderStatus.INITIATED).build();
+    var order = OrderBuilder.get().id(orderId).status(OrderStatus.INITIATED_RESERVING_STOCK).build();
 
     when(orderRepository.findById(orderId)).thenReturn(Mono.just(order));
 
     StepVerifier
-        .create(orderService.updateStatus(orderId, STOCK_RESERVED))
-        .expectNextMatches(o -> o.getId().equals(orderId) && o.getStatus() == STOCK_RESERVED && o.getDateUpdated() != null)
+        .create(orderService.updateStatus(orderId, RESERVED_PROCESSING_PAYMENT))
+        .expectNextMatches(o -> o.getId().equals(orderId) && o.getStatus() == RESERVED_PROCESSING_PAYMENT && o.getDateUpdated() != null)
         .verifyComplete();
 
     verify(orderRepository).findById(orderId);

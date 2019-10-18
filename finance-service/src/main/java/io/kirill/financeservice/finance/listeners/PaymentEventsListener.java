@@ -20,5 +20,9 @@ public class PaymentEventsListener {
   public void processPayment(@Payload Object paymentProcessingEvent) {
     var event = (PaymentProcessingEvent) paymentProcessingEvent;
     log.info("received payment processing event for order {}", event.getOrderId());
+    financeService.processPayment(event.toOder())
+        .doOnError(error -> financeService.rejectPayment(event.getOrderId(), error.getMessage()))
+        .doOnSuccess(financeService::confirmPayment)
+        .subscribe();
   }
 }

@@ -22,9 +22,9 @@ public class StockEventsListener {
     var event = (StockReservationEvent) stockReservationEvent;
     log.info("received stock reservation event for order {}", event.getOrderId());
     Flux.fromIterable(event.getOrderLines())
-        .flatMap(ol -> warehouseService.verifyIsInStock(ol.getItemId(), ol.getAmount()))
+        .flatMap(ol -> warehouseService.verifyIsInStock(ol.getItemId(), ol.getQuantity()))
         .thenMany(Flux.fromIterable(event.getOrderLines()))
-        .doOnNext(ol -> warehouseService.reserveStock(ol.getItemId(), ol.getAmount()))
+        .doOnNext(ol -> warehouseService.reserveStock(ol.getItemId(), ol.getQuantity()))
         .onErrorStop()
         .doOnError(error -> warehouseService.rejectStockReservation(event.getOrderId(), error.getMessage()))
         .doOnComplete(() -> warehouseService.confirmStockReservation(event.getOrderId()))

@@ -45,7 +45,7 @@ public class CreateOrderRequest {
       .orderLines(orderLines)
       .customerId(customerId)
       .dateCreated(Instant.now())
-      .status(OrderStatus.INITIATED)
+      .status(OrderStatus.INITIATED_RESERVING_STOCK)
       .build();
   }
 }

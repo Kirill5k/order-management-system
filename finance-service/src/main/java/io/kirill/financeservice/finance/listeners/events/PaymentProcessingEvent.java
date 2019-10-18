@@ -1,6 +1,7 @@
 package io.kirill.financeservice.finance.listeners.events;
 
 import io.kirill.financeservice.finance.domain.Address;
+import io.kirill.financeservice.finance.domain.OrderDetails;
 import io.kirill.financeservice.finance.domain.OrderLine;
 import io.kirill.financeservice.finance.domain.PaymentDetails;
 import java.util.List;
@@ -15,4 +16,8 @@ public class PaymentProcessingEvent {
   private final List<OrderLine> orderLines;
   private final PaymentDetails paymentDetails;
   private final Address billingAddress;
+
+  public OrderDetails toOder() {
+    return new OrderDetails(orderId, customerId, orderLines, paymentDetails, billingAddress);
+  }
 }

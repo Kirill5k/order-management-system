@@ -2,7 +2,12 @@ spring:
   application:
     name: finance-service
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
   data:
     mongodb:
       uri: mongodb://${MONGO_USER:dbuser}:${MONGO_PASSWORD:dbpassword}@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/finance
+
+app:
+  catalogue-service:
+    base-uri: ${CATALOGUE_SERVICE_URI:localhost:8084}
+    products-uri: ${app.catalogue-service.base-uri}/products

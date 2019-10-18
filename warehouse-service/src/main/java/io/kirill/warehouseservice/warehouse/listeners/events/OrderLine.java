@@ -7,5 +7,5 @@ import lombok.Value;
 @RequiredArgsConstructor
 public class OrderLine {
   private final String itemId;
-  private final Integer amount;
+  private final Integer quantity;
 }

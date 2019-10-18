@@ -1,7 +1,7 @@
 package io.kirill.orderservice.order.listeners;
 
 import static io.kirill.orderservice.order.domain.OrderStatus.CANCELLED_OUT_OF_STOCK;
-import static io.kirill.orderservice.order.domain.OrderStatus.STOCK_RESERVED;
+import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -39,7 +39,7 @@ class StockEventsListenerTest {
 
     stockEventsListener.confirmStock(stockConfirmationEvent);
 
-    verify(orderService, timeout(500)).updateStatus(orderId, STOCK_RESERVED);
+    verify(orderService, timeout(500)).updateStatus(orderId, RESERVED_PROCESSING_PAYMENT);
     verify(orderService, timeout(500)).processPayment(order);
   }
 

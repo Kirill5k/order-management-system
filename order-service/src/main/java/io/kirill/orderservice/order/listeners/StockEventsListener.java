@@ -3,7 +3,7 @@ package io.kirill.orderservice.order.listeners;
 import static io.kirill.orderservice.common.configs.KafkaConfig.ORDER_STOCK_CONFIRM_TOPIC;
 import static io.kirill.orderservice.common.configs.KafkaConfig.ORDER_STOCK_REJECT_TOPIC;
 import static io.kirill.orderservice.order.domain.OrderStatus.CANCELLED_OUT_OF_STOCK;
-import static io.kirill.orderservice.order.domain.OrderStatus.STOCK_RESERVED;
+import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
 
 import io.kirill.orderservice.order.OrderService;
 import io.kirill.orderservice.order.listeners.events.StockConfirmationEvent;
@@ -24,7 +24,7 @@ public class StockEventsListener {
   public void confirmStock(@Payload Object stockConfirmationEvent) {
     var event = (StockConfirmationEvent) stockConfirmationEvent;
     log.info("received stock confirmation event for order {}", event.getOrderId());
-    orderService.updateStatus(event.getOrderId(), STOCK_RESERVED)
+    orderService.updateStatus(event.getOrderId(), RESERVED_PROCESSING_PAYMENT)
         .doOnNext(orderService::processPayment)
         .subscribe();
   }

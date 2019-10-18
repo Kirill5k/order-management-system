@@ -64,7 +64,7 @@ class OrderControllerTest {
         .jsonPath("$.id").isEqualTo(orderId);
 
     var createdOrder = orderArgumentCaptor.getValue();
-    assertThat(createdOrder.getStatus()).isEqualTo(OrderStatus.INITIATED);
+    assertThat(createdOrder.getStatus()).isEqualTo(OrderStatus.INITIATED_RESERVING_STOCK);
     assertThat(createdOrder.getDateCreated()).isBetween(Instant.now().minusSeconds(20), Instant.now().plusSeconds(20));
     verify(orderService).reserveStock(createdOrder.withId(orderId));
   }
