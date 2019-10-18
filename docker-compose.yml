@@ -73,8 +73,6 @@ services:
     build:
       context: ./catalogue-service
       dockerfile: Dockerfile.dev
-      args:
-        - port=8082
     links:
       - mongo-catalogue
     environment:
