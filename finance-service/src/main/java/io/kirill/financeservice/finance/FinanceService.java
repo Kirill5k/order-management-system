@@ -2,7 +2,7 @@ package io.kirill.financeservice.finance;
 
 import io.kirill.financeservice.finance.clients.CatalogueServiceClient;
 import io.kirill.financeservice.finance.clients.OrderServiceClient;
-import io.kirill.financeservice.finance.domain.OrderDetails;
+import io.kirill.financeservice.finance.domain.Order;
 import io.kirill.financeservice.finance.domain.OrderLine;
 import io.kirill.financeservice.finance.domain.Transaction;
 import io.kirill.financeservice.finance.domain.TransactionLine;
@@ -18,7 +18,7 @@ public class FinanceService {
   private final TransactionRepository transactionRepository;
   private final OrderServiceClient orderServiceClient;
 
-  public Mono<Transaction> processPayment(OrderDetails order) {
+  public Mono<Transaction> processPayment(Order order) {
     /* Heavy payment processing logic */
     return Flux.fromIterable(order.getOrderLines())
         .flatMap(this::createTransactionLine)

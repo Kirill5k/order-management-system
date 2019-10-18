@@ -1,14 +1,15 @@
 package io.kirill.financeservice.finance;
 
 import io.kirill.financeservice.finance.domain.Address;
-import io.kirill.financeservice.finance.domain.OrderDetails;
+import io.kirill.financeservice.finance.domain.Order;
 import io.kirill.financeservice.finance.domain.OrderLine;
 import io.kirill.financeservice.finance.domain.PaymentDetails;
+import java.time.Instant;
 import java.util.List;
 
-public class OrderDetailsBuilder {
+public class OrderBuilder {
 
-  public static OrderDetails.OrderDetailsBuilder get() {
+  public static Order.OrderBuilder get() {
     var address = Address.builder()
         .line1("line1")
         .line2("line2")
@@ -24,8 +25,9 @@ public class OrderDetailsBuilder {
         .cvv(197)
         .expires("07/2023")
         .build();
-    return OrderDetails.builder()
-        .orderId("order-1")
+    return Order.builder()
+        .id("order-1")
+        .dateCreated(Instant.now())
         .customerId("customer-1")
         .billingAddress(address)
         .paymentDetails(paymentDetails)

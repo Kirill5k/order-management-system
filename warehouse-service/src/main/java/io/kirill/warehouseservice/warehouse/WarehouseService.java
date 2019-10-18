@@ -1,6 +1,8 @@
 package io.kirill.warehouseservice.warehouse;
 
 import io.kirill.warehouseservice.warehouse.clients.OrderServiceClient;
+import io.kirill.warehouseservice.warehouse.domain.OrderLine;
+import io.kirill.warehouseservice.warehouse.domain.StockLine;
 import io.kirill.warehouseservice.warehouse.exceptions.ItemNotFound;
 import io.kirill.warehouseservice.warehouse.exceptions.ItemNotInStock;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +15,19 @@ public class WarehouseService {
   private final StockLineRepository stockLineRepository;
   private final OrderServiceClient orderServiceClient;
 
-  public Mono<Void> verifyIsInStock(String itemId, int amountRequired) {
+  public Mono<Void> verifyIsInStock(OrderLine orderLine) {
+    var itemId = orderLine.getItemId();
+    var quantity = orderLine.getQuantity();
     return stockLineRepository.findById(itemId)
         .switchIfEmpty(Mono.error(new ItemNotFound(itemId)))
-        .flatMap(sl -> sl.getAmountAvailable() >= amountRequired ? Mono.empty() : Mono.error(new ItemNotInStock(itemId, sl.getAmountAvailable(),amountRequired )));
+        .flatMap(sl -> sl.getAmountAvailable() >= quantity ? Mono.empty() : Mono.error(new ItemNotInStock(itemId, sl.getAmountAvailable(),quantity )));
   }
 
-  public Mono<StockLine> reserveStock(String itemId, int amountRequired) {
+  public Mono<StockLine> reserveStock(OrderLine orderLine) {
+    var itemId = orderLine.getItemId();
+    var quantity = orderLine.getQuantity();
     return stockLineRepository.findById(itemId)
-        .map(sl -> sl.reserve(amountRequired))
+        .map(sl -> sl.reserve(quantity))
         .flatMap(stockLineRepository::save);
   }
 

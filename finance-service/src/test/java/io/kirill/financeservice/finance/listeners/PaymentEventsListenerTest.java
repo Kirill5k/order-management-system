@@ -9,10 +9,9 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import io.kirill.financeservice.finance.FinanceService;
-import io.kirill.financeservice.finance.OrderDetailsBuilder;
+import io.kirill.financeservice.finance.OrderBuilder;
 import io.kirill.financeservice.finance.TransactionBuilder;
-import io.kirill.financeservice.finance.domain.OrderDetails;
-import io.kirill.financeservice.finance.listeners.events.PaymentProcessingEvent;
+import io.kirill.financeservice.finance.domain.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -32,19 +31,17 @@ class PaymentEventsListenerTest {
   PaymentEventsListener paymentEventsListener;
 
   @Captor
-  ArgumentCaptor<OrderDetails> orderDetailsArgumentCaptor;
+  ArgumentCaptor<Order> orderDetailsArgumentCaptor;
 
-  OrderDetails order = OrderDetailsBuilder.get().build();
+  Order order = OrderBuilder.get().build();
 
   @Test
   void processPayment() {
-    var event = new PaymentProcessingEvent(order.getOrderId(), order.getCustomerId(), order.getOrderLines(), order.getPaymentDetails(), order.getBillingAddress());
-
     doAnswer(invocation -> Mono.just(TransactionBuilder.get().build()))
         .when(financeService)
         .processPayment(orderDetailsArgumentCaptor.capture());
 
-    paymentEventsListener.processPayment(event);
+    paymentEventsListener.processPayment(order);
 
     verify(financeService, timeout(500)).processPayment(any());
     verify(financeService, timeout(500)).confirmPayment(any());
@@ -55,16 +52,14 @@ class PaymentEventsListenerTest {
 
   @Test
   void processPaymentWhenError() {
-    var event = new PaymentProcessingEvent(order.getOrderId(), order.getCustomerId(), order.getOrderLines(), order.getPaymentDetails(), order.getBillingAddress());
-
     doAnswer(invocation -> Mono.error(new RuntimeException("error")))
         .when(financeService)
         .processPayment(any());
 
-    paymentEventsListener.processPayment(event);
+    paymentEventsListener.processPayment(order);
 
     verify(financeService, timeout(500)).processPayment(any());
-    verify(financeService, timeout(500)).rejectPayment(order.getOrderId(), "error");
+    verify(financeService, timeout(500)).rejectPayment(order.getId(), "error");
     verify(financeService, never()).confirmPayment(any());
   }
 }

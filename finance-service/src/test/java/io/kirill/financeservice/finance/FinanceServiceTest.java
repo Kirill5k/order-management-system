@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import io.kirill.financeservice.finance.clients.CatalogueServiceClient;
 import io.kirill.financeservice.finance.clients.OrderServiceClient;
-import io.kirill.financeservice.finance.domain.OrderDetails;
+import io.kirill.financeservice.finance.domain.Order;
 import io.kirill.financeservice.finance.domain.ProductItem;
 import io.kirill.financeservice.finance.domain.Transaction;
 import io.kirill.financeservice.finance.domain.TransactionLine;
@@ -44,7 +44,7 @@ class FinanceServiceTest {
 
   @Test
   void processPayment() {
-    var orderDetails = OrderDetailsBuilder.get().build();
+    var orderDetails = OrderBuilder.get().build();
 
     doAnswer(inv -> Mono.just(item1))
         .when(catalogueServiceClient).findProductItem(itemId1);
@@ -66,9 +66,9 @@ class FinanceServiceTest {
     verify(transactionRepository).save(any());
   }
 
-  Predicate<Transaction> transactionMatcher(OrderDetails order) {
+  Predicate<Transaction> transactionMatcher(Order order) {
     return transaction -> transaction.getId().equals(transactionId)
-        && transaction.getOrderId().equals(order.getOrderId())
+        && transaction.getOrderId().equals(order.getId())
         && transaction.getCustomerId().equals(order.getCustomerId())
         && transaction.getDateCreated() != null
         && transaction.getTransactionLines().contains(new TransactionLine(item1, 3))
@@ -80,7 +80,7 @@ class FinanceServiceTest {
 
   @Test
   void processPaymentWhenError() {
-    var orderDetails = OrderDetailsBuilder.get().build();
+    var orderDetails = OrderBuilder.get().build();
 
     doAnswer(inv -> Mono.just(item1))
         .when(catalogueServiceClient).findProductItem(itemId1);

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import io.kirill.orderservice.order.clients.events.PaymentProcessingEvent;
+import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class FinanceServiceClientTest {
   FinanceServiceClient financeServiceClient;
 
   @Captor
-  ArgumentCaptor<PaymentProcessingEvent> paymentProcessingEventArgumentCaptor;
+  ArgumentCaptor<Order> orderArgumentCaptor;
 
   @Test
   void sendPaymentProcessingEvent() {
@@ -33,17 +33,9 @@ class FinanceServiceClientTest {
 
     financeServiceClient.sendPaymentProcessingEvent(order);
 
-    verify(kafkaTemplate).send(eq("finance.payment.process"), eq("id1-payment-processing"),  paymentProcessingEventArgumentCaptor.capture());
+    verify(kafkaTemplate).send(eq("finance.payment.process"), eq("id1-payment-processing"),  orderArgumentCaptor.capture());
 
-    var sentEvent = paymentProcessingEventArgumentCaptor.getValue();
-    assertThat(sentEvent)
-        .extracting(
-            PaymentProcessingEvent::getOrderId,
-            PaymentProcessingEvent::getCustomerId,
-            PaymentProcessingEvent::getPaymentDetails,
-            PaymentProcessingEvent::getBillingAddress,
-            PaymentProcessingEvent::getOrderLines
-        )
-        .containsExactly("id1", order.getCustomerId(), order.getPaymentDetails(), order.getBillingAddress(), order.getOrderLines());
+    var sentEvent = orderArgumentCaptor.getValue();
+    assertThat(sentEvent).isEqualToComparingFieldByField(order);
   }
 }

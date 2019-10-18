@@ -1,4 +1,4 @@
-package io.kirill.warehouseservice.warehouse.listeners.events;
+package io.kirill.warehouseservice.warehouse.domain;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

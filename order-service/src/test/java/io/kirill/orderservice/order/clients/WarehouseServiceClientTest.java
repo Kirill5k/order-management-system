@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import io.kirill.orderservice.order.clients.events.StockReservationEvent;
+import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class WarehouseServiceClientTest {
   WarehouseServiceClient warehouseServiceClient;
 
   @Captor
-  ArgumentCaptor<StockReservationEvent> stockVerificationEventArgumentCaptor;
+  ArgumentCaptor<Order> orderArgumentCaptor;
 
   @Test
   void sendStockReservationEvent() {
@@ -33,10 +33,9 @@ class WarehouseServiceClientTest {
 
     warehouseServiceClient.sendStockReservationEvent(order);
 
-    verify(kafkaTemplate).send(eq("warehouse.stock.reserve"), eq("id1-stock-reservation"),  stockVerificationEventArgumentCaptor.capture());
+    verify(kafkaTemplate).send(eq("warehouse.stock.reserve"), eq("id1-stock-reservation"),  orderArgumentCaptor.capture());
 
-    var sentEvent = stockVerificationEventArgumentCaptor.getValue();
-    assertThat(sentEvent.getOrderId()).isEqualTo(order.getId());
-    assertThat(sentEvent.getOrderLines()).isEqualTo(order.getOrderLines());
+    var sentEvent = orderArgumentCaptor.getValue();
+    assertThat(sentEvent).isEqualToComparingFieldByField(order);
   }
 }

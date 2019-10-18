@@ -2,7 +2,6 @@ package io.kirill.orderservice.order.clients;
 
 import static io.kirill.orderservice.common.configs.KafkaConfig.WAREHOUSE_STOCK_RESERVE_TOPIC;
 
-import io.kirill.orderservice.order.clients.events.StockReservationEvent;
 import io.kirill.orderservice.order.domain.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,7 @@ public class WarehouseServiceClient {
 
   public void sendStockReservationEvent(Order order) {
     log.info("reserving stock for order {} by customer {}", order.getId(), order.getCustomerId());
-    var event = new StockReservationEvent(order);
     var key = String.format("%s-stock-reservation", order.getId());
-    kafkaTemplate.send(WAREHOUSE_STOCK_RESERVE_TOPIC, key, event);
+    kafkaTemplate.send(WAREHOUSE_STOCK_RESERVE_TOPIC, key, order);
   }
 }

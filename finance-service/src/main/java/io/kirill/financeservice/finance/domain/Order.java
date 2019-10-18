@@ -10,12 +10,15 @@ import lombok.Value;
 @Value
 @Builder
 @RequiredArgsConstructor
-public class OrderDetails {
-  private final String orderId;
+public class Order {
+  private final String id;
   private final String customerId;
   private final List<OrderLine> orderLines;
-  private final PaymentDetails paymentDetails;
+  private final Address shippingAddress;
   private final Address billingAddress;
+  private final PaymentDetails paymentDetails;
+  private final Instant dateCreated;
+  private final Instant dateUpdated;
 
   public Transaction toTransaction(List<TransactionLine> transactionLines) {
     var totalChargeAmount = transactionLines.stream()
@@ -23,7 +26,7 @@ public class OrderDetails {
         .reduce(BigDecimal::add)
         .orElseThrow(() -> new IllegalArgumentException("error during price calculation"));
     return Transaction.builder()
-        .orderId(orderId)
+        .orderId(id)
         .customerId(customerId)
         .paymentDetails(paymentDetails)
         .billingAddress(billingAddress)

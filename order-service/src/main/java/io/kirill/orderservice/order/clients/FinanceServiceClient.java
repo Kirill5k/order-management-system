@@ -2,7 +2,6 @@ package io.kirill.orderservice.order.clients;
 
 import static io.kirill.orderservice.common.configs.KafkaConfig.FINANCE_PAYMENT_PROCESS_TOPIC;
 
-import io.kirill.orderservice.order.clients.events.PaymentProcessingEvent;
 import io.kirill.orderservice.order.domain.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,7 @@ public class FinanceServiceClient {
 
   public void sendPaymentProcessingEvent(Order order) {
     log.info("processing payment for order {} by customer {}", order.getId(), order.getCustomerId());
-    var event = new PaymentProcessingEvent(order);
     var key = String.format("%s-payment-processing", order.getId());
-    kafkaTemplate.send(FINANCE_PAYMENT_PROCESS_TOPIC, key, event);
+    kafkaTemplate.send(FINANCE_PAYMENT_PROCESS_TOPIC, key, order);
   }
 }

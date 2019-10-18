@@ -1,6 +1,6 @@
 package io.kirill.warehouseservice.warehouse.listeners;
 
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.doAnswer;
@@ -9,10 +9,10 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import io.kirill.warehouseservice.warehouse.WarehouseService;
-import io.kirill.warehouseservice.warehouse.StockLine;
+import io.kirill.warehouseservice.warehouse.domain.Order;
+import io.kirill.warehouseservice.warehouse.domain.OrderLine;
+import io.kirill.warehouseservice.warehouse.domain.StockLine;
 import io.kirill.warehouseservice.warehouse.exceptions.ItemNotFound;
-import io.kirill.warehouseservice.warehouse.listeners.events.OrderLine;
-import io.kirill.warehouseservice.warehouse.listeners.events.StockReservationEvent;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,35 +36,38 @@ class StockEventsListenerTest {
 
   @Test
   void reserveStock() {
-    var orderLines = List.of(new OrderLine(itemId1, 2), new OrderLine(itemId2, 2));
-    var event = new StockReservationEvent(orderId, orderLines);
+    var ol1 = new OrderLine(itemId1, 2);
+    var ol2 = new OrderLine(itemId2, 2);
+    var event = new Order(orderId, List.of(ol1, ol2));
 
-    doAnswer(inv -> Mono.empty()).when(warehouseService).verifyIsInStock(anyString(), anyInt());
-    doAnswer(inv -> Mono.just(new StockLine(inv.getArgument(0), 2, 2)))
-        .when(warehouseService).reserveStock(anyString(), anyInt());
+    doAnswer(inv -> Mono.empty())
+        .when(warehouseService).verifyIsInStock(any());
+    doAnswer(inv -> Mono.just(new StockLine("item", 2, 2)))
+        .when(warehouseService).reserveStock(any());
 
     stockEventsListener.reserveStock(event);
 
     verify(warehouseService, timeout(500)).confirmStockReservation(orderId);
     verify(warehouseService, never()).rejectStockReservation(anyString(), anyString());
-    verify(warehouseService).verifyIsInStock(itemId1, 2);
-    verify(warehouseService).verifyIsInStock(itemId2, 2);
-    verify(warehouseService).reserveStock(itemId1, 2);
-    verify(warehouseService).reserveStock(itemId2, 2);
+    verify(warehouseService).verifyIsInStock(ol1);
+    verify(warehouseService).verifyIsInStock(ol2);
+    verify(warehouseService).reserveStock(ol1);
+    verify(warehouseService).reserveStock(ol2);
   }
 
   @Test
   void reserveStockWhenNotInStock() {
-    var orderLines = List.of(new OrderLine(itemId1, 2), new OrderLine(itemId2, 2));
-    var event = new StockReservationEvent(orderId, orderLines);
+    var ol1 = new OrderLine(itemId1, 2);
+    var ol2 = new OrderLine(itemId2, 2);
+    var event = new Order(orderId, List.of(ol1, ol2));
 
-    doAnswer(inv -> Mono.empty()).when(warehouseService).verifyIsInStock(itemId1, 2);
-    doAnswer(inv -> Mono.error(new ItemNotFound(itemId2))).when(warehouseService).verifyIsInStock(itemId2, 2);
+    doAnswer(inv -> Mono.empty()).when(warehouseService).verifyIsInStock(ol1);
+    doAnswer(inv -> Mono.error(new ItemNotFound(itemId2))).when(warehouseService).verifyIsInStock(ol2);
 
     stockEventsListener.reserveStock(event);
 
     verify(warehouseService, timeout(500)).rejectStockReservation(orderId, "item with id item-2 does not exist");
     verify(warehouseService, after(500).never()).confirmStockReservation(anyString());
-    verify(warehouseService, after(500).never()).reserveStock(anyString(), anyInt());
+    verify(warehouseService, after(500).never()).reserveStock(any());
   }
 }
