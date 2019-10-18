@@ -23,8 +23,7 @@ public class Order {
   public Transaction toTransaction(List<TransactionLine> transactionLines) {
     var totalChargeAmount = transactionLines.stream()
         .map(tl -> tl.getPrice().multiply(BigDecimal.valueOf(tl.getQuantity())))
-        .reduce(BigDecimal::add)
-        .orElseThrow(() -> new IllegalArgumentException("error during price calculation"));
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
     return Transaction.builder()
         .orderId(id)
         .customerId(customerId)
