@@ -1,4 +1,4 @@
-package io.kirill.customerservice.customer.customer.exceptions;
+package io.kirill.catalogueservice.product.exceptions;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 

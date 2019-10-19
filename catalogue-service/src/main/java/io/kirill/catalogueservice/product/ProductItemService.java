@@ -1,6 +1,6 @@
-package io.kirill.customerservice.customer.customer;
+package io.kirill.catalogueservice.product;
 
-import io.kirill.customerservice.customer.customer.exceptions.ItemNotFound;
+import io.kirill.catalogueservice.product.exceptions.ItemNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

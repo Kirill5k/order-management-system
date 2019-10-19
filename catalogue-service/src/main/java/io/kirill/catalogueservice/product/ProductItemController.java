@@ -1,4 +1,4 @@
-package io.kirill.customerservice.customer.customer;
+package io.kirill.catalogueservice.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

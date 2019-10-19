@@ -1,16 +1,16 @@
-package io.kirill.customerservice.customer.customer;
+package io.kirill.catalogueservice.product;
 
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
-import io.kirill.customerservice.customer.customer.exceptions.ItemNotFound;
+import io.kirill.catalogueservice.product.exceptions.ItemNotFound;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @WebFluxTest(ProductItemController.class)
 class ProductItemControllerTest {

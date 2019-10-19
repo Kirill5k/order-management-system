@@ -1,4 +1,4 @@
-package io.kirill.customerservice.customer.customer;
+package io.kirill.catalogueservice.product;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 

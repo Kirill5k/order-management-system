@@ -1,4 +1,4 @@
-package io.kirill.customerservice.customer.customer;
+package io.kirill.catalogueservice.product;
 
 import java.math.BigDecimal;
 import lombok.Builder;
