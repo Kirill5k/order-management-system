@@ -31,6 +31,14 @@ public class WarehouseService {
         .flatMap(stockLineRepository::save);
   }
 
+  public Mono<StockLine> clearStockReservation(OrderLine orderLine) {
+    var itemId = orderLine.getItemId();
+    var quantity = orderLine.getQuantity();
+    return stockLineRepository.findById(itemId)
+      .map(sl -> sl.clearReservation(quantity))
+      .flatMap(stockLineRepository::save);
+  }
+
   public void rejectStockReservation(String orderId, String message) {
     orderServiceClient.sendStockReservationFailure(orderId, message);
   }

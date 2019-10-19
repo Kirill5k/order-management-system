@@ -14,7 +14,11 @@ public class StockLine {
   private final Integer amountAvailable;
   private final Integer amountReserved;
 
-  public StockLine reserve(int amountRequired) {
-    return new StockLine(itemId, amountAvailable-amountRequired, amountReserved+amountRequired);
+  public StockLine reserve(int quantity) {
+    return new StockLine(itemId, amountAvailable-quantity, amountReserved+quantity);
+  }
+
+  public StockLine clearReservation(int quantity) {
+    return new StockLine(itemId, amountAvailable+quantity, amountReserved-quantity);
   }
 }

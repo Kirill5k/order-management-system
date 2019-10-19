@@ -1,25 +1,22 @@
 package io.kirill.warehouseservice.warehouse.listeners;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.after;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-
 import io.kirill.warehouseservice.warehouse.WarehouseService;
 import io.kirill.warehouseservice.warehouse.domain.Order;
 import io.kirill.warehouseservice.warehouse.domain.OrderLine;
 import io.kirill.warehouseservice.warehouse.domain.StockLine;
 import io.kirill.warehouseservice.warehouse.exceptions.ItemNotFound;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StockEventsListenerTest {
@@ -69,5 +66,20 @@ class StockEventsListenerTest {
     verify(warehouseService, timeout(500)).rejectStockReservation(orderId, "item with id item-2 does not exist");
     verify(warehouseService, after(500).never()).confirmStockReservation(anyString());
     verify(warehouseService, after(500).never()).reserveStock(any());
+  }
+
+  @Test
+  void releaseStock() {
+    var ol1 = new OrderLine(itemId1, 2);
+    var ol2 = new OrderLine(itemId2, 2);
+    var event = new Order(orderId, List.of(ol1, ol2));
+
+    doAnswer(inv -> Mono.just(new StockLine("item", 2, 2)))
+      .when(warehouseService).clearStockReservation(any());
+
+    stockEventsListener.releaseStock(event);
+
+    verify(warehouseService).clearStockReservation(ol1);
+    verify(warehouseService).clearStockReservation(ol2);
   }
 }

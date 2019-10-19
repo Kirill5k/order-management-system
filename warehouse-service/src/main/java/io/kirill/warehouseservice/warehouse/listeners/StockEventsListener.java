@@ -1,7 +1,5 @@
 package io.kirill.warehouseservice.warehouse.listeners;
 
-import static io.kirill.warehouseservice.common.configs.KafkaConfig.WAREHOUSE_STOCK_RESERVE_TOPIC;
-
 import io.kirill.warehouseservice.warehouse.WarehouseService;
 import io.kirill.warehouseservice.warehouse.domain.Order;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +8,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+
+import static io.kirill.warehouseservice.common.configs.KafkaConfig.WAREHOUSE_STOCK_RELEASE_TOPIC;
+import static io.kirill.warehouseservice.common.configs.KafkaConfig.WAREHOUSE_STOCK_RESERVE_TOPIC;
 
 @Slf4j
 @Component
@@ -29,5 +30,14 @@ public class StockEventsListener {
         .doOnError(error -> warehouseService.rejectStockReservation(order.getId(), error.getMessage()))
         .doOnComplete(() -> warehouseService.confirmStockReservation(order.getId()))
         .subscribe();
+  }
+
+  @KafkaListener(topics = WAREHOUSE_STOCK_RELEASE_TOPIC)
+  public void releaseStock(@Payload Object event) {
+    var order = (Order) event;
+    log.info("received stock release event for order {}", order.getId());
+    Flux.fromIterable(order.getOrderLines())
+      .flatMap(warehouseService::clearStockReservation)
+      .subscribe();
   }
 }
