@@ -1,10 +1,9 @@
 package io.kirill.orderservice.order.domain;
 
-import static io.kirill.orderservice.order.domain.OrderStatus.INITIATED_RESERVING_STOCK;
-
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
+
+import static io.kirill.orderservice.order.domain.OrderStatus.INITIATED_RESERVING_STOCK;
 
 public class OrderBuilder {
 
@@ -25,9 +24,9 @@ public class OrderBuilder {
         .expires("07/2023")
         .build();
     return Order.builder()
-        .id(UUID.randomUUID().toString())
-        .customerId(UUID.randomUUID().toString())
-        .orderLines(List.of(new OrderLine(UUID.randomUUID().toString(), 1)))
+        .id("order-1")
+        .customerId("customer-1")
+        .orderLines(List.of(new OrderLine("item-1", 1)))
         .shippingAddress(address)
         .dateCreated(Instant.now())
         .paymentDetails(paymentDetails)

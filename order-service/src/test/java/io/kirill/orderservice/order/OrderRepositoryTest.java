@@ -20,11 +20,13 @@ class OrderRepositoryTest {
   @Test
   void save() {
     var newOrder = OrderBuilder.get().id(null).build();
-    var savedOrder = orderRepository.save(newOrder);
+    var savedOrder = orderRepository.save(newOrder)
+      .map(Order::getId)
+      .flatMap(id -> template.findById(id, Order.class));
 
     StepVerifier
         .create(savedOrder)
-        .expectNextMatches(order -> order.getId() != null && order.getDateCreated().equals(newOrder.getDateCreated()))
+        .expectNextMatches(order -> order.getId() != null && order.getCustomerId().equals("customer-1"))
         .verifyComplete();
   }
 

@@ -5,6 +5,7 @@ import io.kirill.warehouseservice.warehouse.domain.OrderLine;
 import io.kirill.warehouseservice.warehouse.domain.StockLine;
 import io.kirill.warehouseservice.warehouse.exceptions.ItemNotFound;
 import io.kirill.warehouseservice.warehouse.exceptions.ItemNotInStock;
+import io.kirill.warehouseservice.warehouse.repositories.StockLineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

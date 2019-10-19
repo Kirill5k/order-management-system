@@ -1,4 +1,4 @@
-package io.kirill.warehouseservice.warehouse;
+package io.kirill.warehouseservice.warehouse.repositories;
 
 import io.kirill.warehouseservice.warehouse.domain.StockLine;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,19 @@ class StockLineRepositoryTest {
 
   @Autowired
   private StockLineRepository stockLineRepository;
+
+  @Test
+  void save() {
+    var stockLine = new StockLine("1", 1, 1);
+
+    var savedStockLine = template.save(stockLine)
+      .then(template.findById("1", StockLine.class));
+
+    StepVerifier
+      .create(savedStockLine)
+      .expectNextMatches(sl -> sl.getItemId().equals(stockLine.getItemId()) && sl.getAmountAvailable().equals(stockLine.getAmountAvailable()))
+      .verifyComplete();
+  }
 
   @Test
   void findByOrderId() {

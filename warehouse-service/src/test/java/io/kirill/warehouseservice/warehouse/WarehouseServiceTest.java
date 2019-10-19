@@ -3,6 +3,7 @@ package io.kirill.warehouseservice.warehouse;
 import io.kirill.warehouseservice.warehouse.clients.OrderServiceClient;
 import io.kirill.warehouseservice.warehouse.domain.OrderLine;
 import io.kirill.warehouseservice.warehouse.domain.StockLine;
+import io.kirill.warehouseservice.warehouse.repositories.StockLineRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

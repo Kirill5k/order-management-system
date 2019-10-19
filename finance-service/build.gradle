@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.kirill'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '11'
 
 configurations {
@@ -30,9 +30,8 @@ dependencies {
 	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:3.14.4'
-
-    compile 'com.fasterxml.jackson.module:jackson-module-paranamer:2.9.9'
+	testImplementation 'com.squareup.okhttp3:mockwebserver:3.14.4'
+	compile 'com.fasterxml.jackson.module:jackson-module-paranamer:2.9.9'
 }
 
 test {

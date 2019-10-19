@@ -1,5 +1,6 @@
 package io.kirill.warehouseservice.warehouse.listeners;
 
+import io.kirill.warehouseservice.warehouse.OrderBuilder;
 import io.kirill.warehouseservice.warehouse.WarehouseService;
 import io.kirill.warehouseservice.warehouse.domain.Order;
 import io.kirill.warehouseservice.warehouse.domain.OrderLine;
@@ -35,7 +36,7 @@ class StockEventsListenerTest {
   void reserveStock() {
     var ol1 = new OrderLine(itemId1, 2);
     var ol2 = new OrderLine(itemId2, 2);
-    var event = new Order(orderId, List.of(ol1, ol2));
+    var event = OrderBuilder.get().orderLines(List.of(ol1, ol2)).build();
 
     doAnswer(inv -> Mono.empty())
         .when(warehouseService).verifyIsInStock(any());
@@ -56,7 +57,7 @@ class StockEventsListenerTest {
   void reserveStockWhenNotInStock() {
     var ol1 = new OrderLine(itemId1, 2);
     var ol2 = new OrderLine(itemId2, 2);
-    var event = new Order(orderId, List.of(ol1, ol2));
+    var event = OrderBuilder.get().id(orderId).orderLines(List.of(ol1, ol2)).build();
 
     doAnswer(inv -> Mono.empty()).when(warehouseService).verifyIsInStock(ol1);
     doAnswer(inv -> Mono.error(new ItemNotFound(itemId2))).when(warehouseService).verifyIsInStock(ol2);
@@ -72,7 +73,7 @@ class StockEventsListenerTest {
   void releaseStock() {
     var ol1 = new OrderLine(itemId1, 2);
     var ol2 = new OrderLine(itemId2, 2);
-    var event = new Order(orderId, List.of(ol1, ol2));
+    var event = OrderBuilder.get().id(orderId).orderLines(List.of(ol1, ol2)).build();
 
     doAnswer(inv -> Mono.just(new StockLine("item", 2, 2)))
       .when(warehouseService).clearStockReservation(any());
