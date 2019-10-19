@@ -3,7 +3,6 @@ package io.kirill.financeservice.finance.clients;
 import io.kirill.financeservice.common.config.KafkaConfig;
 import io.kirill.financeservice.finance.clients.events.PaymentConfirmationEvent;
 import io.kirill.financeservice.finance.clients.events.PaymentRejectionEvent;
-import io.kirill.financeservice.finance.domain.Transaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -22,10 +21,10 @@ public class OrderServiceClient {
     kafkaTemplate.send(KafkaConfig.ORDER_PAYMENT_REJECT_TOPIC, key, event);
   }
 
-  public void sendPaymentProcessingSuccess(Transaction transaction) {
-    log.info("confirming payment for order {}", transaction.getOrderId());
-    var event = new PaymentConfirmationEvent(transaction);
-    var key = String.format("%s-payment-confirmation", transaction.getOrderId());
+  public void sendPaymentProcessingSuccess(String orderId) {
+    log.info("confirming payment for order {}", orderId);
+    var event = new PaymentConfirmationEvent(orderId);
+    var key = String.format("%s-payment-confirmation", orderId);
     kafkaTemplate.send(KafkaConfig.ORDER_PAYMENT_CONFIRM_TOPIC, key, event);
   }
 }

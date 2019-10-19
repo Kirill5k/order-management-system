@@ -4,10 +4,11 @@ import io.kirill.orderservice.order.clients.FinanceServiceClient;
 import io.kirill.orderservice.order.clients.WarehouseServiceClient;
 import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderStatus;
-import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,11 @@ public class OrderService {
     financeServiceClient.sendPaymentProcessingEvent(order);
   }
 
-  public void notifyCustomer(Order order) {
+  public void releaseStock(Order order) {
+    warehouseServiceClient.sendStockReleaseEvent(order);
+  }
+
+  public void dispatch(Order order) {
+    warehouseServiceClient.sendOrderDispatchEvent(order);
   }
 }

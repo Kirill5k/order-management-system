@@ -19,7 +19,7 @@ public class FinanceService {
   private final OrderServiceClient orderServiceClient;
 
   public Mono<Transaction> processPayment(Order order) {
-    /* Heavy payment processing logic */
+    /* Complex payment processing logic */
     return Flux.fromIterable(order.getOrderLines())
         .flatMap(this::createTransactionLine)
         .collectList()
@@ -37,6 +37,6 @@ public class FinanceService {
   }
 
   public void confirmPayment(Transaction transaction) {
-    orderServiceClient.sendPaymentProcessingSuccess(transaction);
+    orderServiceClient.sendPaymentProcessingSuccess(transaction.getOrderId());
   }
 }

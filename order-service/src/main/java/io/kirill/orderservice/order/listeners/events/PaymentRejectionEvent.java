@@ -1,10 +1,11 @@
-package io.kirill.financeservice.finance.clients.events;
+package io.kirill.orderservice.order.listeners.events;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @Value
 @RequiredArgsConstructor
-public class PaymentConfirmationEvent {
+public class PaymentRejectionEvent {
   private final String orderId;
+  private final String message;
 }

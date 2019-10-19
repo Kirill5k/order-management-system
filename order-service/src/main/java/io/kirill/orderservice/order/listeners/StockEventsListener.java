@@ -1,10 +1,5 @@
 package io.kirill.orderservice.order.listeners;
 
-import static io.kirill.orderservice.common.configs.KafkaConfig.ORDER_STOCK_CONFIRM_TOPIC;
-import static io.kirill.orderservice.common.configs.KafkaConfig.ORDER_STOCK_REJECT_TOPIC;
-import static io.kirill.orderservice.order.domain.OrderStatus.CANCELLED_OUT_OF_STOCK;
-import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
-
 import io.kirill.orderservice.order.OrderService;
 import io.kirill.orderservice.order.listeners.events.StockConfirmationEvent;
 import io.kirill.orderservice.order.listeners.events.StockRejectionEvent;
@@ -13,6 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import static io.kirill.orderservice.common.configs.KafkaConfig.ORDER_STOCK_CONFIRM_TOPIC;
+import static io.kirill.orderservice.common.configs.KafkaConfig.ORDER_STOCK_REJECT_TOPIC;
+import static io.kirill.orderservice.order.domain.OrderStatus.CANCELLED_OUT_OF_STOCK;
+import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
 
 @Slf4j
 @Component
@@ -34,7 +34,6 @@ public class StockEventsListener {
     var event = (StockRejectionEvent) stockRejectionEvent;
     log.info("received stock rejection event for order {}: {}", event.getOrderId(), event.getMessage());
     orderService.updateStatus(event.getOrderId(), CANCELLED_OUT_OF_STOCK)
-        .doOnNext(orderService::notifyCustomer)
         .subscribe();
   }
 }

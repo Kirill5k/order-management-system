@@ -1,4 +1,4 @@
-package io.kirill.financeservice.finance.clients.events;
+package io.kirill.orderservice.order.listeners.events;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

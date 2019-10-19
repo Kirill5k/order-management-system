@@ -1,12 +1,5 @@
 package io.kirill.orderservice.order.listeners;
 
-import static io.kirill.orderservice.order.domain.OrderStatus.CANCELLED_OUT_OF_STOCK;
-import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import io.kirill.orderservice.order.OrderService;
 import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;
@@ -18,6 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+
+import static io.kirill.orderservice.order.domain.OrderStatus.CANCELLED_OUT_OF_STOCK;
+import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StockEventsListenerTest {
@@ -52,6 +50,5 @@ class StockEventsListenerTest {
     stockEventsListener.rejectStock(stockRejectionEvent);
 
     verify(orderService, timeout(500)).updateStatus(orderId, CANCELLED_OUT_OF_STOCK);
-    verify(orderService, timeout(500)).notifyCustomer(order);
   }
 }

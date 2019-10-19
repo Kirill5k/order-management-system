@@ -1,18 +1,10 @@
 package io.kirill.orderservice.order;
 
-import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import io.kirill.orderservice.order.clients.FinanceServiceClient;
 import io.kirill.orderservice.order.clients.WarehouseServiceClient;
 import io.kirill.orderservice.order.domain.Order;
 import io.kirill.orderservice.order.domain.OrderBuilder;
 import io.kirill.orderservice.order.domain.OrderStatus;
-import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -22,6 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.time.Instant;
+
+import static io.kirill.orderservice.order.domain.OrderStatus.RESERVED_PROCESSING_PAYMENT;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -42,50 +41,45 @@ class OrderServiceTest {
   ArgumentCaptor<Order> orderArgumentCaptor;
 
   String orderId = "order-1";
+  Order order = OrderBuilder.get().id(orderId).build();
 
   @Test
   void create() {
     doAnswer(invocation -> Mono.just(invocation.getArgument(0))).when(orderRepository).save(any());
 
-    var newOrder = OrderBuilder.get().build();
-    var savedOrder = orderService.create(newOrder);
+    var savedOrder = orderService.create(order);
 
     StepVerifier
         .create(savedOrder)
-        .expectNextMatches(order -> order.getId().equals(newOrder.getId()) && order.getCustomerId().equals(newOrder.getCustomerId()))
+        .expectNextMatches(order -> order.getId().equals(order.getId()) && order.getCustomerId().equals(order.getCustomerId()))
         .verifyComplete();
 
-    verify(orderRepository).save(newOrder);
+    verify(orderRepository).save(order);
   }
 
   @Test
   void createReturnsError() {
     when(orderRepository.save(any())).thenReturn(Mono.error(RuntimeException::new));
 
-    var newOrder = OrderBuilder.get().build();
-    var savedOrder = orderService.create(newOrder);
+    var savedOrder = orderService.create(order);
 
     StepVerifier
         .create(savedOrder)
         .verifyError();
 
-    verify(orderRepository).save(newOrder);
+    verify(orderRepository).save(order);
   }
 
   @Test
   void reserveStock() {
-    var newOrder = OrderBuilder.get().build();
+    orderService.reserveStock(order);
 
-    orderService.reserveStock(newOrder);
-
-    verify(warehouseServiceClient).sendStockReservationEvent(newOrder);
+    verify(warehouseServiceClient).sendStockReservationEvent(order);
   }
 
   @Test
   void updateStatus() {
-    var order = OrderBuilder.get().id(orderId).status(OrderStatus.INITIATED_RESERVING_STOCK).build();
-
-    when(orderRepository.findById(orderId)).thenReturn(Mono.just(order));
+    when(orderRepository.findById(orderId)).thenReturn(Mono.just(order.withStatus(OrderStatus.INITIATED_RESERVING_STOCK)));
 
     StepVerifier
         .create(orderService.updateStatus(orderId, RESERVED_PROCESSING_PAYMENT))
@@ -101,10 +95,22 @@ class OrderServiceTest {
 
   @Test
   void processPayment() {
-    var order = OrderBuilder.get().build();
-
     orderService.processPayment(order);
 
     verify(financeServiceClient).sendPaymentProcessingEvent(order);
+  }
+
+  @Test
+  void releaseStock() {
+    orderService.releaseStock(order);
+
+    verify(warehouseServiceClient).sendStockReleaseEvent(order);
+  }
+
+  @Test
+  void dispatch() {
+    orderService.dispatch(order);
+
+    verify(warehouseServiceClient).sendOrderDispatchEvent(order);
   }
 }

@@ -1,18 +1,11 @@
 package io.kirill.financeservice.finance;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
 import io.kirill.financeservice.finance.clients.CatalogueServiceClient;
 import io.kirill.financeservice.finance.clients.OrderServiceClient;
 import io.kirill.financeservice.finance.domain.Order;
 import io.kirill.financeservice.finance.domain.ProductItem;
 import io.kirill.financeservice.finance.domain.Transaction;
 import io.kirill.financeservice.finance.domain.TransactionLine;
-import java.math.BigDecimal;
-import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +13,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.math.BigDecimal;
+import java.util.function.Predicate;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FinanceServiceTest {
@@ -106,10 +105,10 @@ class FinanceServiceTest {
 
   @Test
   void confirmPayment() {
-    var transaction = TransactionBuilder.get().build();
+    var transaction = TransactionBuilder.get().orderId("order-1").build();
 
     financeService.confirmPayment(transaction);
 
-    verify(orderServiceClient).sendPaymentProcessingSuccess(transaction);
+    verify(orderServiceClient).sendPaymentProcessingSuccess("order-1");
   }
 }
