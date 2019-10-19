@@ -1,4 +1,4 @@
-package io.kirill.catalogueservice.product;
+package io.kirill.customerservice.customer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,25 +7,25 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import reactor.test.StepVerifier;
 
 @DataMongoTest
-class ProductItemRepositoryTest {
+class CustomerRepositoryTest {
 
   @Autowired
   ReactiveMongoTemplate template;
 
   @Autowired
-  ProductItemRepository productItemRepository;
+  CustomerRepository customerRepository;
 
   @Test
   void findById() {
-    var item = ProductItemBuilder.get().build();
+    var customer = CustomerBuilder.get().build();
 
-    var foundItem = template.save(item)
-        .map(ProductItem::getId)
-        .flatMap(productItemRepository::findById);
+    var foundItem = template.save(customer)
+        .map(Customer::getId)
+        .flatMap(customerRepository::findById);
 
     StepVerifier
         .create(foundItem)
-        .expectNextMatches(i -> i.getId().equals(item.getId()) && i.getName().equals(item.getName()) && i.getPrice().equals(item.getPrice()))
+        .expectNextMatches(i -> i.getId().equals(customer.getId()) && i.getFirstName().equals(customer.getFirstName()) && i.getEmail().equals(customer.getEmail()))
         .verifyComplete();
   }
 }

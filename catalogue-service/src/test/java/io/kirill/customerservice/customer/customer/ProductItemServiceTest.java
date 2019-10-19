@@ -1,4 +1,4 @@
-package io.kirill.catalogueservice.product;
+package io.kirill.customerservice.customer.customer;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

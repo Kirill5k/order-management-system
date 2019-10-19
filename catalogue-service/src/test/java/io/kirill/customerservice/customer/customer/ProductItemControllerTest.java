@@ -1,10 +1,10 @@
-package io.kirill.catalogueservice.product;
+package io.kirill.customerservice.customer.customer;
 
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import io.kirill.catalogueservice.product.exceptions.ItemNotFound;
+import io.kirill.customerservice.customer.customer.exceptions.ItemNotFound;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;

@@ -1,4 +1,4 @@
-package io.kirill.catalogueservice.product;
+package io.kirill.customerservice.customer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +9,12 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/products")
-public class ProductItemController {
-  private final ProductItemService productItemService;
+@RequestMapping("/customers")
+public class CustomerController {
+  private final CustomerService customerService;
 
   @GetMapping("/{id}")
-  public Mono<ProductItem> getOne(@PathVariable String id) {
-    return productItemService.get(id);
+  public Mono<Customer> getOne(@PathVariable String id) {
+    return customerService.get(id);
   }
 }

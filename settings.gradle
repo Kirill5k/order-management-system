@@ -1,2 +1,2 @@
 rootProject.name = 'order-management-system'
-include 'order-service', 'warehouse-service', 'finance-service', 'catalogue-service'
+include 'order-service', 'warehouse-service', 'finance-service', 'catalogue-service', 'customer-service'

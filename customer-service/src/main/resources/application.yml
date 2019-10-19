@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: customer-service
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USER:dbuser}:${MONGO_PASSWORD:dbpassword}@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/customer

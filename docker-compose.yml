@@ -46,6 +46,21 @@ services:
       MONGO_HOST: mongo-warehouse
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
+  mongo-customer:
+    image: bitnami/mongodb:latest
+    environment:
+      MONGODB_USERNAME: dbuser
+      MONGODB_PASSWORD: dbpassword
+      MONGODB_DATABASE: customer
+  customer-service:
+    build:
+      context: ./customer-service
+      dockerfile: Dockerfile.dev
+    links:
+      - mongo-customer
+    environment:
+      MONGO_HOST: mongo-customer
+
   mongo-catalogue:
     image: bitnami/mongodb:latest
     environment:
@@ -67,7 +82,7 @@ services:
       MONGODB_USERNAME: dbuser
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: finance
-  warehouse-finance:
+  finance-finance:
     build:
       context: ./finance-service
       dockerfile: Dockerfile.dev
