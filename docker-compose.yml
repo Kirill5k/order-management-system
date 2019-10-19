@@ -93,3 +93,13 @@ services:
       MONGO_HOST: mongo-finance
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       CATALOGUE_SERVICE_URI: catalogue-service
+
+  notification-finance:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile.dev
+    links:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      CUSTOMER_SERVICE_URI: customer-service

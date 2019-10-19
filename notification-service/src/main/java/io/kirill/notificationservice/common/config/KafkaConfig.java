@@ -25,7 +25,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
   public static final String NOTIFICATION_ORDER_CANCELLED_TOPIC = "notification.order.cancelled";
-  public static final String NOTIFICATION_ORDER_PAYED_TOPIC = "notification.order.payed";
+  public static final String NOTIFICATION_ORDER_PAYED_TOPIC = "notification.order.paid";
   public static final String NOTIFICATION_ORDER_SHIPPING_TOPIC = "notification.order.shipping";
 
   @Value("${spring.kafka.bootstrap-servers}")
