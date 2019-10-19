@@ -6,13 +6,13 @@ import lombok.Value;
 
 @Value
 @RequiredArgsConstructor
-public class TransactionLine {
+public class InvoiceLine {
   private final String itemId;
   private final String fullItemDescription;
   private final Integer quantity;
   private final BigDecimal price;
 
-  public TransactionLine(ProductItem item, int quantity) {
+  public InvoiceLine(ProductItem item, int quantity) {
     this.itemId = item.getId();
     this.fullItemDescription = String.format("%s - %s", item.getName(), item.getDescription());
     this.quantity = quantity;

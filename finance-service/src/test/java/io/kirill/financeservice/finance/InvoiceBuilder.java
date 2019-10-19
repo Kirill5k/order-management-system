@@ -2,14 +2,14 @@ package io.kirill.financeservice.finance;
 
 import io.kirill.financeservice.finance.domain.Address;
 import io.kirill.financeservice.finance.domain.PaymentDetails;
-import io.kirill.financeservice.finance.domain.Transaction;
-import io.kirill.financeservice.finance.domain.TransactionLine;
+import io.kirill.financeservice.finance.domain.Invoice;
+import io.kirill.financeservice.finance.domain.InvoiceLine;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class TransactionBuilder {
+public class InvoiceBuilder {
 
-  public static Transaction.TransactionBuilder get() {
+  public static Invoice.InvoiceBuilder get() {
     var address = Address.builder()
         .line1("line1")
         .line2("line2")
@@ -25,11 +25,11 @@ public class TransactionBuilder {
         .cvv(197)
         .expires("07/2023")
         .build();
-    return Transaction.builder()
+    return Invoice.builder()
         .orderId("order-1")
         .customerId("customer-1")
         .billingAddress(address)
         .paymentDetails(paymentDetails)
-        .transactionLines(List.of(new TransactionLine("item-1", "item - description", 3, BigDecimal.ONE)));
+        .invoiceLines(List.of(new InvoiceLine("item-1", "item - description", 3, BigDecimal.ONE)));
   }
 }

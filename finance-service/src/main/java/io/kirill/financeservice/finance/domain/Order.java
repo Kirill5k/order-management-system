@@ -1,11 +1,12 @@
 package io.kirill.financeservice.finance.domain;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.List;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
 
 @Value
 @Builder
@@ -20,16 +21,16 @@ public class Order {
   private final Instant dateCreated;
   private final Instant dateUpdated;
 
-  public Transaction toTransaction(List<TransactionLine> transactionLines) {
-    var totalChargeAmount = transactionLines.stream()
+  public Invoice toInvoice(List<InvoiceLine> invoiceLines) {
+    var totalChargeAmount = invoiceLines.stream()
         .map(tl -> tl.getPrice().multiply(BigDecimal.valueOf(tl.getQuantity())))
         .reduce(BigDecimal.ZERO, BigDecimal::add);
-    return Transaction.builder()
+    return Invoice.builder()
         .orderId(id)
         .customerId(customerId)
         .paymentDetails(paymentDetails)
         .billingAddress(billingAddress)
-        .transactionLines(transactionLines)
+        .invoiceLines(invoiceLines)
         .dateCreated(Instant.now())
         .totalChargeAmount(totalChargeAmount)
         .build();

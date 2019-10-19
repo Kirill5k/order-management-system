@@ -6,17 +6,17 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import reactor.test.StepVerifier;
 
 @DataMongoTest
-class TransactionRepositoryTest {
+class InvoiceRepositoryTest {
 
   @Autowired
-  TransactionRepository transactionRepository;
+  InvoiceRepository invoiceRepository;
 
   @Test
   void save() {
-    var transaction = TransactionBuilder.get().id(null).build();
+    var transaction = InvoiceBuilder.get().id(null).build();
 
     StepVerifier
-        .create(transactionRepository.save(transaction))
+        .create(invoiceRepository.save(transaction))
         .expectNextMatches(tr -> tr.getId() != null)
         .verifyComplete();
   }

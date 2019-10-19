@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 
 import io.kirill.financeservice.finance.FinanceService;
 import io.kirill.financeservice.finance.OrderBuilder;
-import io.kirill.financeservice.finance.TransactionBuilder;
+import io.kirill.financeservice.finance.InvoiceBuilder;
 import io.kirill.financeservice.finance.domain.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ class PaymentEventsListenerTest {
 
   @Test
   void processPayment() {
-    doAnswer(invocation -> Mono.just(TransactionBuilder.get().build()))
+    doAnswer(invocation -> Mono.just(InvoiceBuilder.get().build()))
         .when(financeService)
         .processPayment(orderDetailsArgumentCaptor.capture());
 
