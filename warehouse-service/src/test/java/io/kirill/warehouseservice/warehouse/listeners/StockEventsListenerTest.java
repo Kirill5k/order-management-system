@@ -1,5 +1,6 @@
 package io.kirill.warehouseservice.warehouse.listeners;
 
+import io.kirill.warehouseservice.notification.NotificationService;
 import io.kirill.warehouseservice.warehouse.OrderBuilder;
 import io.kirill.warehouseservice.warehouse.WarehouseService;
 import io.kirill.warehouseservice.warehouse.domain.Order;
@@ -25,12 +26,16 @@ class StockEventsListenerTest {
   @Mock
   WarehouseService warehouseService;
 
+  @Mock
+  NotificationService notificationService;
+
   @InjectMocks
   StockEventsListener stockEventsListener;
 
   String itemId1 = "item-1";
   String itemId2 = "item-2";
   String orderId = "order-1";
+  String customerId = "customer-1";
 
   @Test
   void reserveStock() {
@@ -47,6 +52,7 @@ class StockEventsListenerTest {
 
     verify(warehouseService, timeout(500)).confirmStockReservation(orderId);
     verify(warehouseService, never()).rejectStockReservation(anyString(), anyString());
+    verify(notificationService, never()).informCustomerAboutCancellation(anyString(), anyString(), anyString());
     verify(warehouseService).verifyIsInStock(ol1);
     verify(warehouseService).verifyIsInStock(ol2);
     verify(warehouseService).reserveStock(ol1);
@@ -57,7 +63,7 @@ class StockEventsListenerTest {
   void reserveStockWhenNotInStock() {
     var ol1 = new OrderLine(itemId1, 2);
     var ol2 = new OrderLine(itemId2, 2);
-    var event = OrderBuilder.get().id(orderId).orderLines(List.of(ol1, ol2)).build();
+    var event = OrderBuilder.get().id(orderId).customerId(customerId).orderLines(List.of(ol1, ol2)).build();
 
     doAnswer(inv -> Mono.empty()).when(warehouseService).verifyIsInStock(ol1);
     doAnswer(inv -> Mono.error(new ItemNotFound(itemId2))).when(warehouseService).verifyIsInStock(ol2);
@@ -67,6 +73,7 @@ class StockEventsListenerTest {
     verify(warehouseService, timeout(500)).rejectStockReservation(orderId, "item with id item-2 does not exist");
     verify(warehouseService, after(500).never()).confirmStockReservation(anyString());
     verify(warehouseService, after(500).never()).reserveStock(any());
+    verify(notificationService, timeout(500)).informCustomerAboutCancellation(customerId, orderId, "item with id item-2 does not exist");
   }
 
   @Test

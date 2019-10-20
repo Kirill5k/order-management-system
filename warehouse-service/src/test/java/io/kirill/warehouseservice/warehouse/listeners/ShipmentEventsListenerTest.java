@@ -1,5 +1,6 @@
 package io.kirill.warehouseservice.warehouse.listeners;
 
+import io.kirill.warehouseservice.notification.NotificationService;
 import io.kirill.warehouseservice.warehouse.OrderBuilder;
 import io.kirill.warehouseservice.warehouse.ShipmentService;
 import io.kirill.warehouseservice.warehouse.domain.Shipment;
@@ -18,18 +19,23 @@ class ShipmentEventsListenerTest {
   @Mock
   ShipmentService shipmentService;
 
+  @Mock
+  NotificationService notificationService;
+
   @InjectMocks
   ShipmentEventsListener shipmentEventsListener;
 
   @Test
   void dispatch() {
     var event = OrderBuilder.get().build();
+    var shipment = Shipment.builder().build();
 
-    doAnswer(inv -> Mono.just(Shipment.builder().build()))
+    doAnswer(inv -> Mono.just(shipment))
       .when(shipmentService).prepare(event);
 
     shipmentEventsListener.dispatch(event);
 
     verify(shipmentService, timeout(500)).prepare(event);
+    verify(notificationService, timeout(500)).informCustomerAboutShipment(shipment);
   }
 }
