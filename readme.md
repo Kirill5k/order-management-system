@@ -1,6 +1,9 @@
-Reactive microservice-based order management system
+## Reactive microservice-based order management system
 
 The project represents a collection of reactive backend services for placing an order through online webstore.
+
+![Architecture Diagram](/architecture.png)
+
 
 When create order request is sent to Order Service, a number of microservices are ready to kick start upon receiving the corresponding events.
 In the preceding diagram, there are six microservices shown:
@@ -14,10 +17,12 @@ In the preceding diagram, there are six microservices shown:
 Each service is responsible for only one function and functions based on receiving and generatings events. 
 Each service is independent and is not aware of its neighborhoods.
 
-Technologies
-Spring Webflux
-Spring Kafka
-Spring Reactive Mongo
-Kafka
-Zookeeper
-Docker Compose to link the containers.
+## Technologies
+
+- Spring Webflux
+- Spring Kafka
+- Spring Reactive Mongo
+- MongoDB
+- Kafka
+- Zookeeper
+- Docker
