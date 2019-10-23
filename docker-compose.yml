@@ -36,9 +36,7 @@ services:
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: warehouse
   mongo-warehouse-seed:
-    build:
-      context: ./db/warehouse
-      dockerfile: Dockerfile
+    build: ./db/warehouse
     depends_on:
       - mongo-warehouse
   warehouse-service:
@@ -59,9 +57,7 @@ services:
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: customer
   mongo-customer-seed:
-    build:
-      context: ./db/customer
-      dockerfile: Dockerfile
+    build: ./db/customer
     depends_on:
       - mongo-customer
   customer-service:
@@ -80,9 +76,7 @@ services:
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: catalogue
   mongo-catalogue-seed:
-    build:
-      context: ./db/catalogue
-      dockerfile: Dockerfile
+    build: ./db/catalogue
     depends_on:
       - mongo-catalogue
   catalogue-service:
