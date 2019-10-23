@@ -5,7 +5,7 @@ services:
     image: wurstmeister/zookeeper:3.4.6
   kafka:
     image: wurstmeister/kafka:2.12-2.3.0
-    links:
+    depends_on:
       - zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
@@ -22,7 +22,7 @@ services:
     build:
       context: ./order-service
       dockerfile: Dockerfile.dev
-    links:
+    depends_on:
       - kafka
       - mongo-orders
     environment:
@@ -35,11 +35,17 @@ services:
       MONGODB_USERNAME: dbuser
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: warehouse
+  mongo-warehouse-seed:
+    build:
+      context: ./db/warehouse
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo-warehouse
   warehouse-service:
     build:
       context: ./warehouse-service
       dockerfile: Dockerfile.dev
-    links:
+    depends_on:
       - kafka
       - mongo-warehouse
     environment:
@@ -52,11 +58,17 @@ services:
       MONGODB_USERNAME: dbuser
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: customer
+  mongo-customer-seed:
+    build:
+      context: ./db/customer
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo-customer
   customer-service:
     build:
       context: ./customer-service
       dockerfile: Dockerfile.dev
-    links:
+    depends_on:
       - mongo-customer
     environment:
       MONGO_HOST: mongo-customer
@@ -67,11 +79,17 @@ services:
       MONGODB_USERNAME: dbuser
       MONGODB_PASSWORD: dbpassword
       MONGODB_DATABASE: catalogue
+  mongo-catalogue-seed:
+    build:
+      context: ./db/catalogue
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo-catalogue
   catalogue-service:
     build:
       context: ./catalogue-service
       dockerfile: Dockerfile.dev
-    links:
+    depends_on:
       - mongo-catalogue
     environment:
       MONGO_HOST: mongo-catalogue
@@ -86,7 +104,7 @@ services:
     build:
       context: ./finance-service
       dockerfile: Dockerfile.dev
-    links:
+    depends_on:
       - kafka
       - mongo-finance
     environment:
@@ -98,7 +116,7 @@ services:
     build:
       context: ./notification-service
       dockerfile: Dockerfile.dev
-    links:
+    depends_on:
       - kafka
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092

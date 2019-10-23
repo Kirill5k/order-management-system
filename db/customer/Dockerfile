@@ -1,5 +1,5 @@
 FROM mongo:latest
 
-COPY products.json /products.json
+COPY customers.json /customers.json
 
-CMD mongoimport --host mongo-catalogue --db catalogue --collection productItem --drop --file /products.json --jsonArray
+CMD mongoimport --host mongo-customer --db catalogue --collection customer --drop --file /customers.json --jsonArray
