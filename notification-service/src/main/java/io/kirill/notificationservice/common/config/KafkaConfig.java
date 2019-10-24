@@ -38,27 +38,24 @@ public class KafkaConfig {
 
   @Bean
   public NewTopic orderCancelledTopic() {
-    return TopicBuilder.name(NOTIFICATION_ORDER_CANCELLED_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(NOTIFICATION_ORDER_CANCELLED_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }
 
   @Bean
   public NewTopic orderPayedTopic() {
-    return TopicBuilder.name(NOTIFICATION_ORDER_PAYED_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(NOTIFICATION_ORDER_PAYED_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }
 
   @Bean
   public NewTopic orderShippingTopic() {
-    return TopicBuilder.name(NOTIFICATION_ORDER_SHIPPING_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(NOTIFICATION_ORDER_SHIPPING_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }

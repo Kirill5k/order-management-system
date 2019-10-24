@@ -41,9 +41,8 @@ public class KafkaConfig {
 
   @Bean
   public NewTopic paymentProcessTopic() {
-    return TopicBuilder.name(FINANCE_PAYMENT_PROCESS_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(FINANCE_PAYMENT_PROCESS_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }

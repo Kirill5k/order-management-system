@@ -44,36 +44,32 @@ public class KafkaConfig {
 
   @Bean
   public NewTopic stockConfirmTopic() {
-    return TopicBuilder.name(ORDER_STOCK_CONFIRM_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(ORDER_STOCK_CONFIRM_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }
 
   @Bean
   public NewTopic stockRejectTopic() {
-    return TopicBuilder.name(ORDER_STOCK_REJECT_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(ORDER_STOCK_REJECT_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }
 
   @Bean
   public NewTopic paymentConfirmTopic() {
-    return TopicBuilder.name(ORDER_PAYMENT_CONFIRM_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(ORDER_PAYMENT_CONFIRM_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }
 
   @Bean
   public NewTopic paymentRejectTopic() {
-    return TopicBuilder.name(ORDER_PAYMENT_REJECT_TOPIC)
-        .partitions(10)
-        .replicas(3)
+    return TopicBuilder
+        .name(ORDER_PAYMENT_REJECT_TOPIC)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }

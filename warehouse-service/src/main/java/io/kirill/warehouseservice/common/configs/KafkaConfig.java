@@ -45,8 +45,6 @@ public class KafkaConfig {
   @Bean
   public NewTopic stockReserveTopic() {
     return TopicBuilder.name(WAREHOUSE_STOCK_RESERVE_TOPIC)
-        .partitions(10)
-        .replicas(3)
         .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
         .build();
   }
@@ -54,8 +52,6 @@ public class KafkaConfig {
   @Bean
   public NewTopic stockReleaseTopic() {
     return TopicBuilder.name(WAREHOUSE_STOCK_RELEASE_TOPIC)
-      .partitions(10)
-      .replicas(3)
       .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
       .build();
   }
@@ -63,8 +59,6 @@ public class KafkaConfig {
   @Bean
   public NewTopic shipmentDispatchTopic() {
     return TopicBuilder.name(WAREHOUSE_SHIPMENT_DISPATCH_TOPIC)
-      .partitions(10)
-      .replicas(3)
       .config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
       .build();
   }
